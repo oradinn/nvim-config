@@ -1,5 +1,29 @@
 # Changelog
 
+## Fix lost diagnostic/telescope/lualine icons (again)
+
+A previous edit that replaced corrupted `?` icon glyphs (see "Restructure
+and fixes" below) itself lost most of those glyphs somewhere along the way:
+`lspconfig.lua`'s ERROR/WARN/INFO diagnostic sign texts had become plain
+spaces (only HINT still had a glyph), `telescope.lua`'s `selection_caret`
+was just a space, and `lualine.lua`'s `section_separators` were empty
+strings — confirmed by printing each string's codepoints rather than by
+looking at the glyphs in an editor.
+
+This time each glyph is written as a `\u{...}` Lua escape instead of a
+literal character, so a tool that mangles non-ASCII bytes can't silently
+strip it again:
+
+- `lspconfig.lua` diagnostic signs: ERROR `\u{f057}`, WARN `\u{f071}`,
+  INFO `\u{f05a}`, HINT `\u{f0eb}`.
+- `telescope.lua` `selection_caret`: `\u{f054} `.
+- `lualine.lua` `section_separators`: left `\u{e0b0}`, right `\u{e0b2}`.
+
+Verified by loading each plugin file directly (not lazy.nvim) and printing
+the resulting strings' codepoints via `vim.fn.str2list` — confirmed to
+match exactly, from the actual committed files rather than re-typed
+strings.
+
 ## Fix tokyonight transparency being ignored
 
 `lua/plugins/ui/tokyonight.lua`'s custom `config` function called

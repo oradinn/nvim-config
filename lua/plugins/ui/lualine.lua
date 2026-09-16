@@ -12,7 +12,9 @@ return {
         icons_enabled = true,
         theme = "auto",
         component_separators = { left = "│", right = "│" },
-        section_separators = { left = "", right = "" },
+        -- Glyphs en \u{...} pour éviter qu'un outil non compatible UTF-8 ne
+        -- les efface silencieusement (voir docs/changelog.md).
+        section_separators = { left = "\u{e0b0}", right = "\u{e0b2}" },
         disabled_filetypes = {
           statusline = {},
           winbar = {},
