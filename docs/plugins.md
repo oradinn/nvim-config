@@ -27,14 +27,15 @@ see [Structure](structure.md) for why.
 | [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) | `editor/treesitter.lua` | Syntax highlighting, indentation, and incremental selection for the languages listed in `ensure_installed`. |
 | [which-key.nvim](https://github.com/folke/which-key.nvim) | `editor/whichkey.lua` | Popup that shows available keybindings as you type a prefix. |
 | [undotree](https://github.com/mbbill/undotree) | `editor/undotree.lua` | Visual undo history, toggled with `<leader>u`. |
+| [render-markdown.nvim](https://github.com/MeanderingProgrammer/render-markdown.nvim) | `editor/markdown.lua` | In-buffer markdown rendering (headers, bold, code blocks, tables) — no browser or Node.js needed. See [LSP → Markdown](lsp.md#markdown) for why this was chosen over a browser preview. |
 | [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) | `editor/plenary.lua` | Lua utility library other plugins (Telescope in particular) depend on. |
 
 ## LSP
 
 | Plugin | File | Notes |
 |---|---|---|
-| [mason.nvim](https://github.com/mason-org/mason.nvim) + [mason-lspconfig.nvim](https://github.com/mason-org/mason-lspconfig.nvim) | `lsp/mason.lua` | Installs and manages the language servers listed in `ensure_installed` (`lua_ls`, `pylsp`, `clangd`) and enables them automatically (`automatic_enable = true`). |
-| [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) | `lsp/lspconfig.lua` | LSP keymaps, diagnostic sign customization, and per-server settings (e.g. `pylsp`'s formatter/linter plugins). |
+| [mason.nvim](https://github.com/mason-org/mason.nvim) + [mason-lspconfig.nvim](https://github.com/mason-org/mason-lspconfig.nvim) | `lsp/mason.lua` | Installs and manages the language servers listed in `ensure_installed` (`lua_ls`, `basedpyright`, `ruff`, `clangd`) and enables them automatically (`automatic_enable = true`). |
+| [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) | `lsp/lspconfig.lua` | LSP keymaps, diagnostic sign customization, and per-server settings. See [LSP](lsp.md) for the Python (`basedpyright`+`ruff`) and C++ (`clangd`) specifics. |
 | [nvim-lsp-file-operations](https://github.com/antosha417/nvim-lsp-file-operations) | same file | Keeps imports in sync when files are renamed/moved via nvim-tree. |
 | [lazydev.nvim](https://github.com/folke/lazydev.nvim) | same file | Configures the Lua LSP for editing this very Neovim config (adds `vim` globals, etc). |
 

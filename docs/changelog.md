@@ -1,5 +1,40 @@
 # Changelog
 
+## Switch Python LSP to basedpyright + ruff, add C++ project guidance and in-buffer markdown rendering
+
+Replaced `pylsp` with [`basedpyright`](https://detachhead.github.io/basedpyright)
+(types/completion/hover) + [`ruff`](https://docs.astral.sh/ruff/editors/)
+(lint/format, via its native `ruff server`, not the deprecated `ruff-lsp`) —
+faster and more actively developed than `pylsp`. `ruff`'s hover is disabled
+(`client.server_capabilities.hoverProvider = false`) so `basedpyright`'s
+richer, type-aware hover is the one that's used. `basedpyright` runs with
+`diagnosticMode = "workspace"` so issues surface in files you haven't opened
+yet.
+
+`clangd` is now started with explicit flags (`--background-index`,
+`--clang-tidy`, `--completion-style=detailed`, `--header-insertion=iwyu`),
+verified against the installed binary's own `--help-hidden` output rather
+than assumed from memory. Added [LSP → C++](lsp.md#c) documenting why
+`#include`s sometimes fail to resolve (no `compile_commands.json`) and the
+fix for both real use cases: CMake projects (e.g. using
+[`onera/project_utils`](https://github.com/onera/project_utils)), where
+`CMAKE_EXPORT_COMPILE_COMMANDS=ON` plus a symlink or `.clangd` file fixes it,
+and no-build-system course exercises, where same-directory quoted includes
+already work with zero config and a `compile_flags.txt` covers
+cross-directory cases.
+
+Added [`render-markdown.nvim`](https://github.com/MeanderingProgrammer/render-markdown.nvim)
+(`lua/plugins/editor/markdown.lua`) for in-buffer markdown rendering
+(headers, bold, code blocks, tables) using the Treesitter parsers already
+installed — no browser, no Node.js. Chosen over
+[`markdown-preview.nvim`](https://github.com/iamcco/markdown-preview.nvim)
+specifically because that one needs Node.js to build its bundled preview
+server, unavailable on the target machine.
+
+New [LSP](lsp.md) doc page covers all of the above. Updated `docs/index.md`,
+`docs/plugins.md`, `docs/structure.md`, `mkdocs.yml`, and `README.md`
+accordingly.
+
 ## Regenerate the lock file
 
 `lazy-lock.json` hadn't been updated since the initial commit, so
