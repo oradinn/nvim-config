@@ -56,6 +56,20 @@ run inside `~/.config/nvim`:
 
 Lock it down after writing it: `chmod 600 ~/.claude/settings.json`.
 
+Prefer keeping dotfiles under `~/.config` (XDG-style, matching where this
+config itself lives)? Claude Code honors `CLAUDE_CONFIG_DIR` to relocate its
+entire config directory — set it in your shell profile:
+
+```bash
+export CLAUDE_CONFIG_DIR="$HOME/.config/claude"
+```
+
+then create `~/.config/claude/settings.json` (same `700`/`600` permissions,
+same content) instead of `~/.claude/settings.json`. `CLAUDE_CONFIG_DIR` is a
+plain environment variable, so Neovim inherits it from your shell and the
+Claude terminal inherits it from Neovim automatically — no plugin change
+needed either.
+
 **Option B — shell profile env vars.** Export the same three variables from
 `~/.bashrc`/`~/.zshrc` instead. Works identically, but applies to every
 process in your shell, not just `claude`. If your dotfiles are themselves a
@@ -72,9 +86,10 @@ from the repo either way.
 
 ### Verify before you trust it
 
-1. Confirm the values live outside git: `cat ~/.claude/settings.json` (Option
-   A) or `echo $ANTHROPIC_BASE_URL` (Option B) — then `git -C ~/.config/nvim
-   status` should show nothing related to either.
+1. Confirm the values live outside git: `cat ~/.claude/settings.json` (or
+   `~/.config/claude/settings.json` if using `CLAUDE_CONFIG_DIR`) or
+   `echo $ANTHROPIC_BASE_URL` (Option B) — then `git -C ~/.config/nvim status`
+   should show nothing related to either.
 2. `claude doctor` from a plain shell — confirms the CLI can reach the
    endpoint before involving Neovim at all.
 3. In Neovim: `<leader>ac` to open Claude, then `:ClaudeCodeStatus` to confirm
