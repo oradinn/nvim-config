@@ -26,6 +26,7 @@ see [Structure](structure.md) for why.
 | [nvim-tree.lua](https://github.com/nvim-tree/nvim-tree.lua) | `editor/nvim-tree.lua` | File explorer sidebar, toggled with `<leader>e`. |
 | [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) | `editor/treesitter.lua` | Syntax highlighting, indentation, and incremental selection for the languages listed in `ensure_installed`. |
 | [which-key.nvim](https://github.com/folke/which-key.nvim) | `editor/whichkey.lua` | Popup that shows available keybindings as you type a prefix. |
+| [undotree](https://github.com/mbbill/undotree) | `editor/undotree.lua` | Visual undo history, toggled with `<leader>u`. |
 | [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) | `editor/plenary.lua` | Lua utility library other plugins (Telescope in particular) depend on. |
 
 ## LSP

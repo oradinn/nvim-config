@@ -1,5 +1,13 @@
 # Changelog
 
+## Add the missing undotree plugin
+
+`<leader>u` (`lua/core/keymaps.lua`) has always called `:UndotreeShow`, and
+`docs/keymaps.md` documented it, but [`mbbill/undotree`](https://github.com/mbbill/undotree)
+was never actually declared as a plugin — the command didn't exist. Added
+`lua/plugins/editor/undotree.lua`, lazy-loaded on `:UndotreeShow`/`:UndotreeToggle`.
+Updated `docs/plugins.md`.
+
 ## Fix invalid filename modifier and wrong `J` description
 
 `lua/core/keymaps.lua`'s "copy relative path" keymap used
