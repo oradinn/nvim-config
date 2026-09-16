@@ -15,8 +15,8 @@ return {
       defaults = {
 
         -- Parce que c'est joli
-        prompt_prefix = "? ",
-        selection_caret = "? ",
+        prompt_prefix = "🔍 ",
+        selection_caret = " ",
         path_display = { "smart" },
         file_ignore_patterns = { ".git/", "node_modules" },
 
