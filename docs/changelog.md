@@ -1,5 +1,15 @@
 # Changelog
 
+## Fix tokyonight transparency being ignored
+
+`lua/plugins/ui/tokyonight.lua`'s custom `config` function called
+`vim.cmd.colorscheme("tokyonight")` directly without ever passing `opts` to
+`require("tokyonight").setup(...)` — lazy.nvim only auto-applies `opts` when
+there's no custom `config` function, so `style = "moon"` and
+`transparent = true` were silently ignored. Fixed by taking `opts` as the
+function's second argument and passing it through to `setup()` explicitly,
+before applying the colorscheme.
+
 ## Fix `<leader>d` keymap conflict
 
 `lua/core/keymaps.lua` maps `<leader>d` (normal and visual) to delete-to-void,
