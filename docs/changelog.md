@@ -1,0 +1,46 @@
+# Changelog
+
+## Restructure and fixes
+
+Reorganized `lua/plugins/` into `ui/`, `editor/`, `lsp/`, and `completion/`
+subfolders (see [Structure](structure.md)), added this documentation site, and
+fixed the following issues found while going through the configuration:
+
+- **`init.lua`**: removed a leftover `vim.lsp.set_log_level("debug")` call that
+  forced verbose LSP logging on every startup, writing heavily to `lsp.log` in
+  normal use.
+- **`lua/config/lazy.lua`**: removed a redundant `{ import = "plugins.lsp" }` —
+  `lazy.nvim` already imports `lua/plugins/` recursively, so the LSP plugins
+  (`mason.nvim`, `nvim-lspconfig`) were being registered twice.
+- **`lua/plugins/completion/nvim-cmp.lua`**: the completion `sources` list had
+  `nvim_lua`, `luasnip`, `buffer`, `path`, and `emoji` each duplicated, and
+  `nvim_lsp` wasn't prioritized — completion menus showed duplicate entries.
+  Sources are now deduplicated and split into a priority group (`nvim_lsp`,
+  `nvim_lua`, `luasnip`) and a fallback group (`buffer`, `path`, `emoji`).
+- **`lua/plugins/lsp/lspconfig.lua`**: the `pylsp` settings block (formatter,
+  linter, type checker, import sorting options) was commented out behind
+  `--DEBUG--` markers, so `pylsp` — despite being installed via Mason — ran
+  with defaults only. Restored it as live configuration.
+- **Corrupted icon glyphs**: several Unicode icons had been mangled into a
+  literal `?` (confirmed by inspecting the raw bytes — plain `0x3f`, not a
+  multi-byte codepoint), in:
+  - `lua/core/options.lua` (`listchars.nbsp`/`.trail`)
+  - `lua/plugins/editor/telescope.lua` (`prompt_prefix`, `selection_caret`)
+  - `lua/plugins/ui/lualine.lua` (`component_separators`, `section_separators`)
+  - `lua/plugins/lsp/lspconfig.lua` (diagnostic sign text for error/warn/info/hint)
+
+  Replaced with proper glyphs; a [Nerd Font](https://www.nerdfonts.com/) is
+  required for these (and for `nvim-web-devicons`, already a dependency of
+  several plugins here) to render correctly.
+- **`lua/plugins/ui/tokyonight.lua`**: `transparent = "true"` was a string, not
+  a boolean; changed to `transparent = true`. Also fixed inconsistent
+  indentation in the plugin spec.
+- **`lua/core/keymaps.lua`**:
+  - Fixed typos in keymap descriptions ("realtive" → "relative", "middke" →
+    "middle").
+  - The visual-mode `J`/`K` "move block of text" keymaps had their
+    descriptions swapped (`J`, which moves the selection down, was labeled
+    "up" and vice versa).
+  - The `<leader>p` (paste-over-selection) keymap was labeled `"Cut"`, which
+    doesn't describe what it does; relabeled to "Paste over selection without
+    overwriting register".

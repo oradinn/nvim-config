@@ -47,42 +47,42 @@ return {
     vim.diagnostic.config({
       signs = {
         text = {
-          [vim.diagnostic.severity.ERROR] = "?",
-          [vim.diagnostic.severity.WARN] = "?",
-          [vim.diagnostic.severity.INFO] = "?",
-          [vim.diagnostic.severity.HINT] = "?",
+          [vim.diagnostic.severity.ERROR] = " ",
+          [vim.diagnostic.severity.WARN] = " ",
+          [vim.diagnostic.severity.INFO] = " ",
+          [vim.diagnostic.severity.HINT] = "󰠠 ",
         },
       },
     })
-    --DEBUG---- Python
-    --DEBUG--vim.lsp.config("pylsp", {
-    --DEBUG--  settings = {
-    --DEBUG--    pylsp = {
-    --DEBUG--      plugins = {
-    --DEBUG--        -- formatter options
-    --DEBUG--        black = { enabled = true },
-    --DEBUG--        autopep8 = { enabled = false },
-    --DEBUG--        yapf = { enabled = false },
-    --DEBUG--        -- linter options
-    --DEBUG--        pyflakes = { enabled = false },
-    --DEBUG--        pycodestyle = {
-    --DEBUG--          enabled = true,
-    --DEBUG--          ignore = { "E501" },
-    --DEBUG--        },
-    --DEBUG--        -- type checker
-    --DEBUG--        pylsp_mypy = { enabled = true },
-    --DEBUG--        -- auto-completion options
-    --DEBUG--        jedi_completion = { fuzzy = true },
-    --DEBUG--        -- import sorting
-    --DEBUG--        pylsp_isort = { enabled = true },
-    --DEBUG--        rope_completion = { enabled = true },
-    --DEBUG--        rope_autoimport = {
-    --DEBUG--          enabled = true,
-    --DEBUG--        },
-    --DEBUG--      },
-    --DEBUG--    },
-    --DEBUG--  },
-    --DEBUG--})
 
+    -- Python (pylsp, installé via mason, cf. lua/plugins/lsp/mason.lua)
+    vim.lsp.config("pylsp", {
+      settings = {
+        pylsp = {
+          plugins = {
+            -- formatter options
+            black = { enabled = true },
+            autopep8 = { enabled = false },
+            yapf = { enabled = false },
+            -- linter options
+            pyflakes = { enabled = false },
+            pycodestyle = {
+              enabled = true,
+              ignore = { "E501" },
+            },
+            -- type checker
+            pylsp_mypy = { enabled = true },
+            -- auto-completion options
+            jedi_completion = { fuzzy = true },
+            -- import sorting
+            pylsp_isort = { enabled = true },
+            rope_completion = { enabled = true },
+            rope_autoimport = {
+              enabled = true,
+            },
+          },
+        },
+      },
+    })
   end,
 }
