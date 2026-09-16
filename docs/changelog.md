@@ -1,5 +1,23 @@
 # Changelog
 
+## Regenerate the lock file
+
+`lazy-lock.json` hadn't been updated since the initial commit, so
+`codecompanion.nvim` and `undotree` (added since) were never pinned — a
+fresh install would grab whatever their latest commit happened to be at
+install time instead of a known-good one. Ran
+`nvim --headless "+Lazy! install" +qa` and committed the result.
+
+Diffed against the pre-existing lock file to confirm nothing unexpected
+moved: `codecompanion.nvim` and `undotree` are newly added (as expected,
+they had no prior entry), `nvim-treesitter` stayed on `master` at the same
+commit it was already pinned to (confirming the branch pin above works),
+and every other plugin's commit is unchanged — except `lazy.nvim` itself,
+which isn't installed through the lock-file-restore mechanism at all: it
+bootstraps itself via a fresh `git clone --branch=stable` in
+`lua/config/lazy.lua`, so its own lock entry naturally drifts on any fresh
+install regardless of anything in this repo's plugin specs.
+
 ## Pin nvim-treesitter to the `master` branch
 
 Upstream's default branch has moved to `main`, which restructures the
