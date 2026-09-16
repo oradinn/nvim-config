@@ -45,7 +45,6 @@ return {
       -- sources pour l'autocompletion, par ordre de priorité
       sources = cmp.config.sources({
         { name = "nvim_lsp" }, -- lsp
-        { name = "nvim_lua" }, -- API lua de neovim
         { name = "luasnip" }, -- snippets
       }, {
         { name = "buffer" }, -- texte du buffer courant
@@ -65,7 +64,6 @@ return {
             nvim_lsp = "[LSP]",
             buffer = "[Buffer]",
             luasnip = "[LuaSnip]",
-            nvim_lua = "[Lua]",
             path = "[Path]",
             emoji = "[Emoji]",
           },

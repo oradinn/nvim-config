@@ -14,7 +14,7 @@ see [Structure](structure.md) for why.
 
 | Plugin | File | Notes |
 |---|---|---|
-| [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) | `completion/nvim-cmp.lua` | Completion engine. Sources are ordered by priority: `nvim_lsp` / `nvim_lua` / `luasnip` first, `buffer` / `path` / `emoji` as fallback. |
+| [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) | `completion/nvim-cmp.lua` | Completion engine. Sources are ordered by priority: `nvim_lsp` / `luasnip` first, `buffer` / `path` / `emoji` as fallback. |
 | [LuaSnip](https://github.com/L3MON4D3/LuaSnip) + [friendly-snippets](https://github.com/rafamadriz/friendly-snippets) | same file | Snippet engine and a ready-made snippet collection, loaded lazily on `InsertEnter`. |
 | [lspkind.nvim](https://github.com/onsails/lspkind.nvim) | same file | Adds VS Code-style icons and a `[LSP]`/`[Buffer]`/... suffix to completion entries. |
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## Remove the nvim_lua completion source (plugin not installed)
+
+`nvim-cmp.lua` listed `{ name = "nvim_lua" }` as a completion source, but
+`hrsh7th/cmp-nvim-lua` — the plugin that actually provides it — was never
+declared as a dependency. Removed the source and its now-orphaned
+`[Lua]` menu label. Updated `docs/plugins.md`.
+
 ## Add the missing undotree plugin
 
 `<leader>u` (`lua/core/keymaps.lua`) has always called `:UndotreeShow`, and
