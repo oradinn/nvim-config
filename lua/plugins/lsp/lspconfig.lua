@@ -21,7 +21,7 @@ return {
     { "gs", vim.lsp.buf.signature_help, desc = "Show LSP signature help", mode = "n" },
     { "<leader>rn", vim.lsp.buf.rename, desc = "Smart rename", mode = "n" },
     { "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", desc = "Show buffer diagnostics", mode = "n" },
-    { "<leader>d", vim.diagnostic.open_float, desc = "Show line diagnostics", mode = "n" },
+    { "<leader>cd", vim.diagnostic.open_float, desc = "Show line diagnostics", mode = "n" },
     {
       "[d",
       function()

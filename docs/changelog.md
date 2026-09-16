@@ -1,5 +1,14 @@
 # Changelog
 
+## Fix `<leader>d` keymap conflict
+
+`lua/core/keymaps.lua` maps `<leader>d` (normal and visual) to delete-to-void,
+but `lua/plugins/lsp/lspconfig.lua` also mapped `<leader>d` (normal only) to
+`vim.diagnostic.open_float`, silently overriding the delete-to-void mapping
+in normal mode. Moved line diagnostics to `<leader>cd` (grouped with the
+other LSP `<leader>c*` code-related keymaps) so both mappings work as
+intended. Updated `docs/keymaps.md`.
+
 ## Removed Claude Code, settled on CodeCompanion
 
 Removed `coder/claudecode.nvim` (`lua/plugins/ai/claudecode.lua`) entirely.
