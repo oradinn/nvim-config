@@ -1,7 +1,7 @@
 -- CodeCompanion : assistant IA générique (façon Cline) pour Neovim, capable
 -- de parler directement à un endpoint compatible OpenAI via l'adaptateur
--- communautaire "openai_compatible" — sans passerelle de traduction, à
--- l'inverse de Claude Code qui attend l'API Anthropic. Voir docs/ai.md.
+-- communautaire "openai_compatible" — sans passerelle de traduction. Voir
+-- docs/ai.md.
 --
 -- Rien de sensible ici : `env.url`/`env.api_key` sont de simples NOMS de
 -- variables d'environnement que CodeCompanion résout lui-même via
@@ -15,6 +15,7 @@ return {
   },
   cmd = { "CodeCompanion", "CodeCompanionChat", "CodeCompanionActions" },
   keys = {
+    { "<leader>a", nil, desc = "AI" },
     { "<leader>ai", "<cmd>CodeCompanionChat Toggle<cr>", desc = "Toggle CodeCompanion chat", mode = { "n", "v" } },
     { "<leader>ap", "<cmd>CodeCompanionActions<cr>", desc = "CodeCompanion action palette", mode = { "n", "v" } },
     { "<leader>av", "<cmd>CodeCompanionChat Add<cr>", desc = "Add selection to CodeCompanion chat", mode = "v" },

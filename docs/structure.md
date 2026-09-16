@@ -13,7 +13,6 @@
 │   │   └── lazy.lua            # bootstraps and configures lazy.nvim itself
 │   └── plugins/
 │       ├── ai/
-│       │   ├── claudecode.lua    # Claude Code IDE integration (coder/claudecode.nvim)
 │       │   └── codecompanion.lua # Cline-equivalent assistant (olimorris/codecompanion.nvim)
 │       ├── completion/
 │       │   └── nvim-cmp.lua    # nvim-cmp + LuaSnip + friendly-snippets
@@ -41,7 +40,7 @@
   `init.lua`.
 - **`plugins/` holds one `lazy.nvim` spec per file**, grouped into subfolders by
   what the plugin is *for* rather than alphabetically:
-  - `ai/` — AI/agent tooling (Claude Code IDE integration).
+  - `ai/` — AI/agent tooling (CodeCompanion).
   - `completion/` — the completion engine and its sources.
   - `editor/` — file navigation, fuzzy finding, syntax/structure awareness.
   - `lsp/` — the LSP client and the tool that installs language servers.

@@ -1,17 +1,29 @@
 # Changelog
 
-## Claude Code integration
+## Removed Claude Code, settled on CodeCompanion
 
-Added [`coder/claudecode.nvim`](https://github.com/coder/claudecode.nvim)
-(`lua/plugins/ai/claudecode.lua`, new `plugins.ai` category imported from
-`lua/config/lazy.lua`) for in-editor Claude Code. The plugin only launches the
-`claude` CLI and has no model/provider logic of its own; the config forwards
-`ANTHROPIC_BASE_URL` / `ANTHROPIC_AUTH_TOKEN` / `ANTHROPIC_MODEL` from the
-shell into the Claude terminal when set, so it can be pointed at a
-non-Anthropic backend without editing this repo. See [Claude Code](ai.md) for
-the full explanation, including why an OpenAI-compatible in-house gateway
-needs a translating proxy in front of it (Claude Code speaks Anthropic's
-Messages API, not OpenAI's Chat Completions API).
+Removed `coder/claudecode.nvim` (`lua/plugins/ai/claudecode.lua`) entirely.
+It was added first, but Claude Code only speaks Anthropic's Messages API,
+and the in-house LLM gateway this config targets turned out to be
+OpenAI-compatible — confirmed by an existing working `opencode.json` config
+using `@ai-sdk/openai-compatible` against the same gateway, and by Claude
+Code itself returning `400: System message must be at the beginning` (an
+OpenAI Chat Completions validation message, not an Anthropic one) against it.
+[`olimorris/codecompanion.nvim`](https://github.com/olimorris/codecompanion.nvim)
+(`lua/plugins/ai/codecompanion.lua`, added in the same change that removed
+Claude Code) talks that same OpenAI-compatible shape directly via its
+`openai_compatible` adapter, with no translation layer needed. See
+[AI in Neovim](ai.md).
+
+## Claude Code integration (removed, see above)
+
+Added `coder/claudecode.nvim` (`lua/plugins/ai/claudecode.lua`, new
+`plugins.ai` category imported from `lua/config/lazy.lua`) for in-editor
+Claude Code. The plugin only launched the `claude` CLI and had no
+model/provider logic of its own; the config forwarded `ANTHROPIC_BASE_URL` /
+`ANTHROPIC_AUTH_TOKEN` / `ANTHROPIC_MODEL` from the shell into the Claude
+terminal when set, so it could be pointed at a non-Anthropic backend without
+editing this repo.
 
 ## Restructure and fixes
 
