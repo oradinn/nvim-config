@@ -1,98 +1,108 @@
-# Claude Code in Neovim
+# AI in Neovim
 
-[`coder/claudecode.nvim`](https://github.com/coder/claudecode.nvim) (`lua/plugins/ai/claudecode.lua`)
-brings [Claude Code](https://docs.anthropic.com/en/docs/claude-code) into Neovim
-using the same WebSocket/MCP protocol as the official VS Code and JetBrains
-extensions: Claude can see the current buffer and selection, open files, and
-propose changes as native diffs you review before accepting.
+[`olimorris/codecompanion.nvim`](https://github.com/olimorris/codecompanion.nvim)
+(`lua/plugins/ai/codecompanion.lua`) is a general-purpose AI coding assistant
+for Neovim — chat buffer, inline edits, an action palette — comparable to
+Cline in VS Code. It's wired here to a custom in-house LLM gateway via
+CodeCompanion's community-contributed [`openai_compatible` adapter](https://github.com/olimorris/codecompanion.nvim/blob/main/lua/codecompanion/adapters/http/openai_compatible.lua),
+which sends plain OpenAI Chat Completions requests (`POST {url}{chat_url}`,
+`Authorization: Bearer {api_key}`) — the same shape most in-house LLM
+gateways and tools like Cline/OpenCode use. No bridge or translation proxy
+needed.
 
-## What the plugin does — and doesn't do
+> That adapter is explicitly marked "not supported by CodeCompanion.nvim...
+> provided as an example" in its own source — it's community-maintained
+> rather than a first-class adapter. It works, and is the standard way people
+> connect CodeCompanion to a custom/local OpenAI-compatible server, but keep
+> that in mind if something behaves oddly — check the adapter's own issues/
+> discussions rather than assuming it's this repo's config.
 
-The plugin's only job is to launch the `claude` CLI binary in a terminal split
-and run a local WebSocket server it connects to. **It has no concept of model
-or provider** — which backend `claude` actually talks to is entirely decided
-by the CLI itself, the same way it would be from a regular shell.
+## Configure it
 
-## Using an in-house LLM instead of Claude AI
+Credentials live in `~/.config/codecompanion/` — a plain directory of small
+text files, entirely outside `~/.config/nvim` (this repo), never committed:
 
-Claude Code's CLI speaks Anthropic's **Messages API** wire format. If your
-in-house model has been set up to speak that same format natively (as opposed
-to an OpenAI Chat Completions-style API, the shape Cline and most VS Code
-extensions use), no bridge or proxy is needed — point the CLI straight at it
-via three environment variables:
-
-| Variable | Purpose |
-|---|---|
-| `ANTHROPIC_BASE_URL` | URL of the Anthropic-Messages-API-compatible endpoint |
-| `ANTHROPIC_AUTH_TOKEN` | Auth token/API key for that endpoint |
-| `ANTHROPIC_MODEL` | Model ID to request |
-
-If instead your gateway only speaks an OpenAI-compatible API, `ANTHROPIC_BASE_URL`
-alone won't work — you'd need a translating proxy in front of it (e.g.
-[claude-code-router](https://github.com/musistudio/claude-code-router)) and
-would point these same three variables at that proxy instead.
-
-### Keep the credential out of this repo
-
-**Never put the token in any file inside `~/.config/nvim`** (this repo) — not
-in `lua/plugins/ai/claudecode.lua`, not in a checked-in `.env`, nowhere. Two
-ways to configure it that live entirely outside this repo:
-
-**Option A — `~/.claude/settings.json` (recommended).** Claude Code's own
-per-user config file. The `claude` CLI reads it automatically on every
-launch — from a plain shell or from this Neovim plugin's terminal — and it
-lives in your home directory, so it can never be swept up by a `git add -A`
-run inside `~/.config/nvim`:
-
-```json
-{
-  "env": {
-    "ANTHROPIC_BASE_URL": "https://your-gateway:port/api",
-    "ANTHROPIC_AUTH_TOKEN": "sk-...",
-    "ANTHROPIC_MODEL": "your-model-id"
-  }
-}
+```bash
+mkdir -p -m 700 ~/.config/codecompanion
+printf '%s' "https://your-gateway:port/api" > ~/.config/codecompanion/base_url
+printf '%s' "sk-..."                        > ~/.config/codecompanion/api_key
+printf '%s' "your-model-id"                 > ~/.config/codecompanion/model
+chmod 600 ~/.config/codecompanion/*
 ```
 
-Lock it down after writing it: `chmod 600 ~/.claude/settings.json`.
+| File | Purpose |
+|---|---|
+| `base_url` | Base URL of your OpenAI-compatible gateway (CodeCompanion appends `chat_url` from the plugin file to this) |
+| `api_key` | API key for that endpoint |
+| `model` | Model ID to request — optional, falls back to a placeholder default in the plugin file if the file doesn't exist |
 
-**Option B — shell profile env vars.** Export the same three variables from
-`~/.bashrc`/`~/.zshrc` instead. Works identically, but applies to every
-process in your shell, not just `claude`. If your dotfiles are themselves a
-git repo, put the `export` lines in a file that repo gitignores (e.g.
-`~/.zshrc.local`, sourced from the end of the tracked `~/.zshrc`) rather than
-in the tracked file directly.
+`lua/plugins/ai/codecompanion.lua` never contains a literal value for any of
+these — `env.url`/`env.api_key` use CodeCompanion's built-in `file:` prefix
+(read fresh from disk on every request; confirmed in `codecompanion.nvim`'s
+own `adapters/utils/init.lua`), and `model` is read the same way via a small
+helper in the plugin file. Since it's a file rather than a shell-exported
+environment variable, it's only ever read when explicitly opened — no risk of
+leaking through `/proc/<pid>/environ` or a child process inheriting it
+unintentionally.
 
-Either option needs **zero changes to this repo** — `claude` resolves its own
-connection regardless of what launched it. The `terminal.env` block already in
-`lua/plugins/ai/claudecode.lua` (`os.getenv("ANTHROPIC_...")`) only matters if
-you want the Neovim-launched session to see *different* values than a plain
-shell would; it never contains the key itself, so there's nothing to leak
-from the repo either way.
+If your gateway's chat endpoint isn't at `{base_url}/chat/completions`,
+adjust the `chat_url` field in the plugin file (not a secret, fine to
+edit/commit).
 
-### Verify before you trust it
-
-1. Confirm the values live outside git: `cat ~/.claude/settings.json` (Option
-   A) or `echo $ANTHROPIC_BASE_URL` (Option B) — then `git -C ~/.config/nvim
-   status` should show nothing related to either.
-2. `claude doctor` from a plain shell — confirms the CLI can reach the
-   endpoint before involving Neovim at all.
-3. In Neovim: `<leader>ac` to open Claude, then `:ClaudeCodeStatus` to confirm
-   it's connected.
-
-If your organization instead gives you a custom `claude`-compatible binary or
-wrapper script rather than env vars, point `opts.terminal_cmd` at it in
-`lua/plugins/ai/claudecode.lua` (see the [claudecode.nvim README](https://github.com/coder/claudecode.nvim#local-installation-configuration)
-for the exact option) — that path is a binary location, not a secret, so it's
-fine to commit.
+**Prefer environment variables instead?** They still work — CodeCompanion's
+`env` fields also resolve a plain string as an environment variable *name* if
+one by that name is set (falling through to the file check otherwise). Export
+`CODECOMPANION_BASE_URL`/`CODECOMPANION_API_KEY` from your shell profile and
+change `env.url`/`env.api_key` in the plugin file to those names instead of
+the `file:` paths. If your dotfiles are themselves a git repo, put the
+`export` lines in a file that repo gitignores (e.g. `~/.zshrc.local`, sourced
+from the tracked `~/.zshrc`) rather than the tracked file directly.
 
 ## Keymaps
 
-See [Keymaps → Claude Code](keymaps.md#claude-code-luapluginsaiclaudecodelua).
+See [Keymaps → CodeCompanion](keymaps.md#codecompanion-luapluginsaicodecompanionlua).
+
+## Verify
+
+1. `git -C ~/.config/nvim status` should show nothing related to the values
+   above — confirms they're not in this repo.
+2. `:checkhealth codecompanion` in Neovim — checks the plugin's own setup.
+3. `<leader>ai` to open the chat, ask something simple, confirm you get a
+   real response back from your in-house model.
 
 ## Troubleshooting
 
-- Run `:checkhealth claudecode` first — it checks the CLI is installed, the
-  WebSocket server is running, and whether Claude is connected.
-- `:ClaudeCodeStatus` shows connection state.
-- Set `log_level = "debug"` in the plugin's `opts` for verbose logs.
+**Chat hangs forever with no response and no error** (the `## CodeCompanion`
+header appears but nothing ever streams in): first isolate whether it's the
+gateway or the plugin — replicate the exact request with `curl`, using your
+real config file contents:
+
+```bash
+curl -sS -X POST "$(cat ~/.config/codecompanion/base_url)/chat/completions" \
+  -H "Authorization: Bearer $(cat ~/.config/codecompanion/api_key)" \
+  -H "Content-Type: application/json" \
+  -d "{\"model\":\"$(cat ~/.config/codecompanion/model)\",\"messages\":[{\"role\":\"user\",\"content\":\"hi\"}]}"
+```
+
+If that returns a fast, complete response but CodeCompanion still hangs, the
+likely cause is **streaming**: the `openai_compatible` adapter requests
+Server-Sent Events (`"stream": true`) by default, and the curl test above
+doesn't. If your gateway doesn't fully support SSE streaming (or emits a
+shape CodeCompanion's parser doesn't recognize), the client sits waiting for
+chunks that never resolve — a hung connection, not an HTTP error, so nothing
+surfaces in the chat buffer or `:messages`. This repo already disables
+streaming for that reason (`opts.stream = false` in
+`lua/plugins/ai/codecompanion.lua`, confirmed against the adapter's own
+source to be a real, respected toggle — not a guess). If your gateway *does*
+support streaming properly and you'd rather have it, flip that back to
+`true`.
+
+Other things to check if it's still not working:
+
+- `:messages` in Neovim — errors go through `vim.notify` and may have
+  scrolled past unnoticed.
+- `~/.cache/nvim/codecompanion.log` — the plugin's own log file.
+- The config files themselves aren't empty/malformed:
+  `cat ~/.config/codecompanion/base_url`, `cat ~/.config/codecompanion/model`,
+  `wc -c ~/.config/codecompanion/api_key` (byte count only, to avoid printing
+  the key).

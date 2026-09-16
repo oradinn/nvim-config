@@ -8,7 +8,7 @@ see [Structure](structure.md) for why.
 
 | Plugin | File | Notes |
 |---|---|---|
-| [claudecode.nvim](https://github.com/coder/claudecode.nvim) | `ai/claudecode.lua` | IDE integration for the [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI agent — same protocol as the official VS Code/JetBrains extensions. See [Claude Code](ai.md) for setup, keymaps, and how to point it at a non-Anthropic backend. |
+| [codecompanion.nvim](https://github.com/olimorris/codecompanion.nvim) | `ai/codecompanion.lua` | General-purpose AI assistant (Cline equivalent) wired to a custom OpenAI-compatible endpoint via the community `openai_compatible` adapter. See [AI in Neovim](ai.md) for setup. |
 
 ## Completion
 

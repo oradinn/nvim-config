@@ -2,7 +2,7 @@
 
 A personal, from-scratch Neovim configuration built on [lazy.nvim](https://github.com/folke/lazy.nvim) —
 Telescope, Treesitter, native LSP (`nvim-lspconfig` + `mason.nvim`), `nvim-cmp`,
-Claude Code, and Tokyonight, wired together with plain Lua.
+CodeCompanion, and Tokyonight, wired together with plain Lua.
 
 ## Quick start
 
@@ -26,7 +26,7 @@ under [`docs/`](docs/):
 - [Structure](docs/structure.md)
 - [Keymaps](docs/keymaps.md)
 - [Plugins](docs/plugins.md)
-- [Claude Code](docs/ai.md)
+- [AI in Neovim](docs/ai.md)
 - [Changelog](docs/changelog.md)
 
 To browse them as a rendered site locally:
@@ -47,7 +47,7 @@ init.lua                 -- entry point
 lua/core/                -- options & keymaps that don't depend on any plugin
 lua/config/lazy.lua       -- bootstraps lazy.nvim
 lua/plugins/
-  ai/                     -- Claude Code IDE integration
+  ai/                     -- CodeCompanion (AI assistant)
   completion/             -- nvim-cmp, LuaSnip
   editor/                 -- telescope, nvim-tree, treesitter, which-key
   lsp/                    -- mason.nvim, nvim-lspconfig
