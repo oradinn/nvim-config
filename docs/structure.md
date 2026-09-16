@@ -42,10 +42,15 @@
   - `editor/` — file navigation, fuzzy finding, syntax/structure awareness.
   - `lsp/` — the LSP client and the tool that installs language servers.
   - `ui/` — anything purely visual (statusline, bufferline, icons, colorscheme).
-- **A single `{ import = "plugins" }`** in `lua/config/lazy.lua` is enough:
-  `lazy.nvim` walks `lua/plugins/` recursively, so every subfolder above is
-  picked up automatically. Do not add a second `import` entry for a subfolder —
-  it would register those plugin specs twice.
+- **Each category subfolder needs its own `import` entry** in
+  `lua/config/lazy.lua` (`{ import = "plugins.editor" }`, etc). `lazy.nvim`'s
+  `import` only goes one level deep per call — a subfolder is only picked up
+  automatically if it has its own `init.lua` (see `Spec:import`/`Util.lsmod`
+  in `lazy.nvim`'s source). A bare `{ import = "plugins" }` would silently
+  find nothing once every plugin file lives inside a category subfolder, and
+  fail at startup with `No specs found for module "plugins"`.
+  When adding a new category subfolder, add a matching
+  `{ import = "plugins.<name>" }` line in `lua/config/lazy.lua`.
 - **Keymaps live next to what they operate on.** A keymap that only makes sense
   once a plugin is loaded (e.g. `<leader>ff` for Telescope) is declared in that
   plugin's own spec file (via `keys = {...}` or inside `config`), not in

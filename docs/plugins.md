@@ -43,10 +43,11 @@ single plugin list — see [Structure](structure.md).
 ## Adding a plugin
 
 1. Create a new file under the subfolder that matches the plugin's purpose
-   (`ui/`, `editor/`, `lsp/`, or `completion/`) — add a new subfolder if none fit.
+   (`ui/`, `editor/`, `lsp/`, or `completion/`).
 2. Return a single [lazy.nvim plugin spec](https://lazy.folke.io/spec) table from
    that file.
 3. Restart Neovim, or run `:Lazy sync`, to install it.
 
-No changes to `lua/config/lazy.lua` are needed — it already imports the whole
-`plugins/` tree.
+If the plugin doesn't fit any existing subfolder, create a new one **and** add
+a matching `{ import = "plugins.<name>" }` line in `lua/config/lazy.lua` — see
+[Structure](structure.md) for why that explicit import is required.

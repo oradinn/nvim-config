@@ -9,9 +9,16 @@ fixed the following issues found while going through the configuration:
 - **`init.lua`**: removed a leftover `vim.lsp.set_log_level("debug")` call that
   forced verbose LSP logging on every startup, writing heavily to `lsp.log` in
   normal use.
-- **`lua/config/lazy.lua`**: removed a redundant `{ import = "plugins.lsp" }` —
-  `lazy.nvim` already imports `lua/plugins/` recursively, so the LSP plugins
-  (`mason.nvim`, `nvim-lspconfig`) were being registered twice.
+- **`lua/config/lazy.lua`**: `lazy.nvim`'s `import` only goes one directory
+  level deep per call (a subfolder is picked up automatically only if it has
+  its own `init.lua`). A first pass at this restructure assumed a single
+  `{ import = "plugins" }` would recurse into every category subfolder,
+  removed the explicit `{ import = "plugins.lsp" }` on that assumption, and
+  broke startup (`No specs found for module "plugins"`) once every plugin
+  file lived one level deeper than `lua/plugins/`. Fixed by importing each
+  category explicitly: `{ import = "plugins.completion" }`,
+  `{ import = "plugins.editor" }`, `{ import = "plugins.lsp" }`,
+  `{ import = "plugins.ui" }`.
 - **`lua/plugins/completion/nvim-cmp.lua`**: the completion `sources` list had
   `nvim_lua`, `luasnip`, `buffer`, `path`, and `emoji` each duplicated, and
   `nvim_lsp` wasn't prioritized — completion menus showed duplicate entries.
