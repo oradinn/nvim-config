@@ -1,8 +1,14 @@
 # Plugins
 
-Each plugin is declared in its own file under `lua/plugins/`, grouped by purpose.
-`lazy.nvim` merges every file it finds under that directory (recursively) into a
-single plugin list — see [Structure](structure.md).
+Each plugin is declared in its own file under `lua/plugins/`, grouped by purpose
+into subfolders that are each imported explicitly from `lua/config/lazy.lua` —
+see [Structure](structure.md) for why.
+
+## AI
+
+| Plugin | File | Notes |
+|---|---|---|
+| [claudecode.nvim](https://github.com/coder/claudecode.nvim) | `ai/claudecode.lua` | IDE integration for the [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI agent — same protocol as the official VS Code/JetBrains extensions. See [Claude Code](ai.md) for setup, keymaps, and how to point it at a non-Anthropic backend. |
 
 ## Completion
 
@@ -43,10 +49,11 @@ single plugin list — see [Structure](structure.md).
 ## Adding a plugin
 
 1. Create a new file under the subfolder that matches the plugin's purpose
-   (`ui/`, `editor/`, `lsp/`, or `completion/`) — add a new subfolder if none fit.
+   (`ui/`, `editor/`, `lsp/`, or `completion/`).
 2. Return a single [lazy.nvim plugin spec](https://lazy.folke.io/spec) table from
    that file.
 3. Restart Neovim, or run `:Lazy sync`, to install it.
 
-No changes to `lua/config/lazy.lua` are needed — it already imports the whole
-`plugins/` tree.
+If the plugin doesn't fit any existing subfolder, create a new one **and** add
+a matching `{ import = "plugins.<name>" }` line in `lua/config/lazy.lua` — see
+[Structure](structure.md) for why that explicit import is required.

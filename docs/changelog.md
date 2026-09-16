@@ -1,5 +1,18 @@
 # Changelog
 
+## Claude Code integration
+
+Added [`coder/claudecode.nvim`](https://github.com/coder/claudecode.nvim)
+(`lua/plugins/ai/claudecode.lua`, new `plugins.ai` category imported from
+`lua/config/lazy.lua`) for in-editor Claude Code. The plugin only launches the
+`claude` CLI and has no model/provider logic of its own; the config forwards
+`ANTHROPIC_BASE_URL` / `ANTHROPIC_AUTH_TOKEN` / `ANTHROPIC_MODEL` from the
+shell into the Claude terminal when set, so it can be pointed at a
+non-Anthropic backend without editing this repo. See [Claude Code](ai.md) for
+the full explanation, including why an OpenAI-compatible in-house gateway
+needs a translating proxy in front of it (Claude Code speaks Anthropic's
+Messages API, not OpenAI's Chat Completions API).
+
 ## Restructure and fixes
 
 Reorganized `lua/plugins/` into `ui/`, `editor/`, `lsp/`, and `completion/`
@@ -9,9 +22,16 @@ fixed the following issues found while going through the configuration:
 - **`init.lua`**: removed a leftover `vim.lsp.set_log_level("debug")` call that
   forced verbose LSP logging on every startup, writing heavily to `lsp.log` in
   normal use.
-- **`lua/config/lazy.lua`**: removed a redundant `{ import = "plugins.lsp" }` —
-  `lazy.nvim` already imports `lua/plugins/` recursively, so the LSP plugins
-  (`mason.nvim`, `nvim-lspconfig`) were being registered twice.
+- **`lua/config/lazy.lua`**: `lazy.nvim`'s `import` only goes one directory
+  level deep per call (a subfolder is picked up automatically only if it has
+  its own `init.lua`). A first pass at this restructure assumed a single
+  `{ import = "plugins" }` would recurse into every category subfolder,
+  removed the explicit `{ import = "plugins.lsp" }` on that assumption, and
+  broke startup (`No specs found for module "plugins"`) once every plugin
+  file lived one level deeper than `lua/plugins/`. Fixed by importing each
+  category explicitly: `{ import = "plugins.completion" }`,
+  `{ import = "plugins.editor" }`, `{ import = "plugins.lsp" }`,
+  `{ import = "plugins.ui" }`.
 - **`lua/plugins/completion/nvim-cmp.lua`**: the completion `sources` list had
   `nvim_lua`, `luasnip`, `buffer`, `path`, and `emoji` each duplicated, and
   `nvim_lsp` wasn't prioritized — completion menus showed duplicate entries.

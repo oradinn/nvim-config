@@ -4,3 +4,12 @@
 # Python virtualenvs used to build the docs locally
 .venv/
 venv/
+
+# Local secrets/overrides that must never be committed (e.g. Claude Code
+# credentials for an in-house LLM — see docs/ai.md). These should normally
+# live outside this repo entirely (~/.claude/settings.json, shell profile);
+# these patterns are a safety net in case one ever ends up in here anyway.
+.env
+.env.*
+*.local.json
+.claude/settings.local.json

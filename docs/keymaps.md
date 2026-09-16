@@ -4,6 +4,24 @@ Leader key is `<Space>`. Press `<leader>?` at any time to open
 [which-key](https://github.com/folke/which-key.nvim) and browse everything
 available from the current mode/buffer.
 
+## Claude Code (`lua/plugins/ai/claudecode.lua`)
+
+See [Claude Code](ai.md) for what the plugin does and how to point it at a
+non-Anthropic backend.
+
+| Mode | Keys | Action |
+|---|---|---|
+| n | `<leader>ac` | Toggle the Claude terminal |
+| n | `<leader>af` | Focus the Claude terminal |
+| n | `<leader>ar` | Resume the last Claude session |
+| n | `<leader>aC` | Continue the current Claude session |
+| n | `<leader>am` | Select Claude model |
+| n | `<leader>ab` | Add current buffer to Claude's context |
+| v | `<leader>as` | Send selection to Claude |
+| n (nvim-tree) | `<leader>as` | Add file under cursor to Claude's context |
+| n | `<leader>aa` | Accept a proposed diff |
+| n | `<leader>ad` | Reject a proposed diff |
+
 ## General (`lua/core/keymaps.lua`)
 
 | Mode | Keys | Action |
