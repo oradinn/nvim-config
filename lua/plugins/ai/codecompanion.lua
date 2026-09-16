@@ -35,6 +35,15 @@ return {
       http = {
         in_house = function()
           return require("codecompanion.adapters").extend("openai_compatible", {
+            -- Désactivé : certaines passerelles OpenAI-compatible internes
+            -- ne gèrent pas (ou mal) le streaming SSE, ce qui fait rester la
+            -- requête bloquée indéfiniment côté CodeCompanion sans la
+            -- moindre erreur visible (un simple curl sans "stream": true
+            -- répond correctement dans ce cas). Repasser à true si votre
+            -- passerelle gère bien le streaming.
+            opts = {
+              stream = false,
+            },
             env = {
               -- Lus depuis des fichiers, jamais des valeurs littérales.
               url = "file:~/.config/codecompanion/base_url",

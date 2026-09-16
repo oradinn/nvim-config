@@ -69,3 +69,40 @@ See [Keymaps → CodeCompanion](keymaps.md#codecompanion-luapluginsaicodecompani
 2. `:checkhealth codecompanion` in Neovim — checks the plugin's own setup.
 3. `<leader>ai` to open the chat, ask something simple, confirm you get a
    real response back from your in-house model.
+
+## Troubleshooting
+
+**Chat hangs forever with no response and no error** (the `## CodeCompanion`
+header appears but nothing ever streams in): first isolate whether it's the
+gateway or the plugin — replicate the exact request with `curl`, using your
+real config file contents:
+
+```bash
+curl -sS -X POST "$(cat ~/.config/codecompanion/base_url)/chat/completions" \
+  -H "Authorization: Bearer $(cat ~/.config/codecompanion/api_key)" \
+  -H "Content-Type: application/json" \
+  -d "{\"model\":\"$(cat ~/.config/codecompanion/model)\",\"messages\":[{\"role\":\"user\",\"content\":\"hi\"}]}"
+```
+
+If that returns a fast, complete response but CodeCompanion still hangs, the
+likely cause is **streaming**: the `openai_compatible` adapter requests
+Server-Sent Events (`"stream": true`) by default, and the curl test above
+doesn't. If your gateway doesn't fully support SSE streaming (or emits a
+shape CodeCompanion's parser doesn't recognize), the client sits waiting for
+chunks that never resolve — a hung connection, not an HTTP error, so nothing
+surfaces in the chat buffer or `:messages`. This repo already disables
+streaming for that reason (`opts.stream = false` in
+`lua/plugins/ai/codecompanion.lua`, confirmed against the adapter's own
+source to be a real, respected toggle — not a guess). If your gateway *does*
+support streaming properly and you'd rather have it, flip that back to
+`true`.
+
+Other things to check if it's still not working:
+
+- `:messages` in Neovim — errors go through `vim.notify` and may have
+  scrolled past unnoticed.
+- `~/.cache/nvim/codecompanion.log` — the plugin's own log file.
+- The config files themselves aren't empty/malformed:
+  `cat ~/.config/codecompanion/base_url`, `cat ~/.config/codecompanion/model`,
+  `wc -c ~/.config/codecompanion/api_key` (byte count only, to avoid printing
+  the key).
