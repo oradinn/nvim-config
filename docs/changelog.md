@@ -1,5 +1,18 @@
 # Changelog
 
+## Claude Code integration
+
+Added [`coder/claudecode.nvim`](https://github.com/coder/claudecode.nvim)
+(`lua/plugins/ai/claudecode.lua`, new `plugins.ai` category imported from
+`lua/config/lazy.lua`) for in-editor Claude Code. The plugin only launches the
+`claude` CLI and has no model/provider logic of its own; the config forwards
+`ANTHROPIC_BASE_URL` / `ANTHROPIC_AUTH_TOKEN` / `ANTHROPIC_MODEL` from the
+shell into the Claude terminal when set, so it can be pointed at a
+non-Anthropic backend without editing this repo. See [Claude Code](ai.md) for
+the full explanation, including why an OpenAI-compatible in-house gateway
+needs a translating proxy in front of it (Claude Code speaks Anthropic's
+Messages API, not OpenAI's Chat Completions API).
+
 ## Restructure and fixes
 
 Reorganized `lua/plugins/` into `ui/`, `editor/`, `lsp/`, and `completion/`

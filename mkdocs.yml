@@ -49,4 +49,5 @@ nav:
   - Structure: structure.md
   - Keymaps: keymaps.md
   - Plugins: plugins.md
+  - Claude Code: ai.md
   - Changelog: changelog.md

@@ -1,8 +1,14 @@
 # Plugins
 
-Each plugin is declared in its own file under `lua/plugins/`, grouped by purpose.
-`lazy.nvim` merges every file it finds under that directory (recursively) into a
-single plugin list — see [Structure](structure.md).
+Each plugin is declared in its own file under `lua/plugins/`, grouped by purpose
+into subfolders that are each imported explicitly from `lua/config/lazy.lua` —
+see [Structure](structure.md) for why.
+
+## AI
+
+| Plugin | File | Notes |
+|---|---|---|
+| [claudecode.nvim](https://github.com/coder/claudecode.nvim) | `ai/claudecode.lua` | IDE integration for the [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI agent — same protocol as the official VS Code/JetBrains extensions. See [Claude Code](ai.md) for setup, keymaps, and how to point it at a non-Anthropic backend. |
 
 ## Completion
 

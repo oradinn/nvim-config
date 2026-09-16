@@ -21,6 +21,7 @@ vim.opt.rtp:prepend(lazypath)
 -- propre `init.lua`. On importe donc explicitement chaque sous-dossier de
 -- catégorie plutôt que de compter sur une récursion qui n'existe pas.
 require("lazy").setup({
+  { import = "plugins.ai" },
   { import = "plugins.completion" },
   { import = "plugins.editor" },
   { import = "plugins.lsp" },
