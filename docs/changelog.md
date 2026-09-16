@@ -1,5 +1,17 @@
 # Changelog
 
+## Pin nvim-treesitter to the `master` branch
+
+Upstream's default branch has moved to `main`, which restructures the
+plugin's API in a way that's incompatible with this config's
+`require("nvim-treesitter.configs").setup(...)`-based setup. Without an
+explicit branch, a future install/update would silently switch to `main`
+and break treesitter entirely (confirmed while testing this change: a
+plain `:Lazy install` run without a pinned branch rewrote
+`lazy-lock.json`'s `nvim-treesitter` entry from `master` to `main`, same
+commit — an upstream branch rename, not a fork). Added `branch = "master"`
+to `lua/plugins/editor/treesitter.lua` with a comment explaining why.
+
 ## Remove the nvim_lua completion source (plugin not installed)
 
 `nvim-cmp.lua` listed `{ name = "nvim_lua" }` as a completion source, but

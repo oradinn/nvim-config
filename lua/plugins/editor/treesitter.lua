@@ -1,5 +1,9 @@
 return {
   "nvim-treesitter/nvim-treesitter",
+  -- Épinglé sur master : la branche par défaut en amont est passée à main,
+  -- dont l'API (module principal restructuré) est incompatible avec notre
+  -- config basée sur require("nvim-treesitter.configs").setup(...).
+  branch = "master",
   build = ":TSUpdate",
   config = function()
     local treesitter = require("nvim-treesitter.configs")
