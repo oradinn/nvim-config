@@ -15,9 +15,11 @@ by the CLI itself, the same way it would be from a regular shell.
 
 ## Using an in-house LLM instead of Claude AI
 
-Claude Code's CLI speaks Anthropic's **Messages API** wire format. It can be
-pointed at any endpoint that speaks that same format via three environment
-variables:
+Claude Code's CLI speaks Anthropic's **Messages API** wire format. If your
+in-house model has been set up to speak that same format natively (as opposed
+to an OpenAI Chat Completions-style API, the shape Cline and most VS Code
+extensions use), no bridge or proxy is needed — point the CLI straight at it
+via three environment variables:
 
 | Variable | Purpose |
 |---|---|
@@ -25,34 +27,64 @@ variables:
 | `ANTHROPIC_AUTH_TOKEN` | Auth token/API key for that endpoint |
 | `ANTHROPIC_MODEL` | Model ID to request |
 
-`lua/plugins/ai/claudecode.lua` forwards whichever of these three are set in
-your shell into the Claude terminal automatically (`opts.terminal.env`) — set
-them in your shell profile and this config picks them up with zero changes.
+If instead your gateway only speaks an OpenAI-compatible API, `ANTHROPIC_BASE_URL`
+alone won't work — you'd need a translating proxy in front of it (e.g.
+[claude-code-router](https://github.com/musistudio/claude-code-router)) and
+would point these same three variables at that proxy instead.
 
-**Important — most in-house gateways are OpenAI-compatible, not
-Anthropic-compatible.** If yours exposes an OpenAI Chat Completions-style API
-(base URL + API key + model ID, the shape Cline and most VS Code extensions
-use), pointing `ANTHROPIC_BASE_URL` straight at it will **not** work — the
-request/response shapes are different APIs, not just different auth. You need
-something in between that accepts Anthropic-format requests and forwards them
-to your OpenAI-compatible gateway. That's infrastructure your organization
-provides (or a tool like [claude-code-router](https://github.com/musistudio/claude-code-router),
-which exists specifically to bridge Claude Code to OpenAI-compatible and other
-non-Anthropic providers) — this repo intentionally doesn't pin a specific one,
-since that's an org-wide decision, not a per-editor one.
+### Keep the credential out of this repo
 
-Once that bridge exists, either:
+**Never put the token in any file inside `~/.config/nvim`** (this repo) — not
+in `lua/plugins/ai/claudecode.lua`, not in a checked-in `.env`, nowhere. Two
+ways to configure it that live entirely outside this repo:
 
-- export `ANTHROPIC_BASE_URL` / `ANTHROPIC_AUTH_TOKEN` / `ANTHROPIC_MODEL` in
-  your shell profile (works for Neovim *and* `claude` run directly from a
-  terminal), or
-- set them only for Neovim by editing the `env` table passed to
-  `opts.terminal` in `lua/plugins/ai/claudecode.lua`.
+**Option A — `~/.claude/settings.json` (recommended).** Claude Code's own
+per-user config file. The `claude` CLI reads it automatically on every
+launch — from a plain shell or from this Neovim plugin's terminal — and it
+lives in your home directory, so it can never be swept up by a `git add -A`
+run inside `~/.config/nvim`:
+
+```json
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://your-gateway:port/api",
+    "ANTHROPIC_AUTH_TOKEN": "sk-...",
+    "ANTHROPIC_MODEL": "your-model-id"
+  }
+}
+```
+
+Lock it down after writing it: `chmod 600 ~/.claude/settings.json`.
+
+**Option B — shell profile env vars.** Export the same three variables from
+`~/.bashrc`/`~/.zshrc` instead. Works identically, but applies to every
+process in your shell, not just `claude`. If your dotfiles are themselves a
+git repo, put the `export` lines in a file that repo gitignores (e.g.
+`~/.zshrc.local`, sourced from the end of the tracked `~/.zshrc`) rather than
+in the tracked file directly.
+
+Either option needs **zero changes to this repo** — `claude` resolves its own
+connection regardless of what launched it. The `terminal.env` block already in
+`lua/plugins/ai/claudecode.lua` (`os.getenv("ANTHROPIC_...")`) only matters if
+you want the Neovim-launched session to see *different* values than a plain
+shell would; it never contains the key itself, so there's nothing to leak
+from the repo either way.
+
+### Verify before you trust it
+
+1. Confirm the values live outside git: `cat ~/.claude/settings.json` (Option
+   A) or `echo $ANTHROPIC_BASE_URL` (Option B) — then `git -C ~/.config/nvim
+   status` should show nothing related to either.
+2. `claude doctor` from a plain shell — confirms the CLI can reach the
+   endpoint before involving Neovim at all.
+3. In Neovim: `<leader>ac` to open Claude, then `:ClaudeCodeStatus` to confirm
+   it's connected.
 
 If your organization instead gives you a custom `claude`-compatible binary or
-wrapper script rather than env vars, point `opts.terminal_cmd` at it in the
-same file (see the [claudecode.nvim README](https://github.com/coder/claudecode.nvim#local-installation-configuration)
-for the exact option).
+wrapper script rather than env vars, point `opts.terminal_cmd` at it in
+`lua/plugins/ai/claudecode.lua` (see the [claudecode.nvim README](https://github.com/coder/claudecode.nvim#local-installation-configuration)
+for the exact option) — that path is a binary location, not a secret, so it's
+fine to commit.
 
 ## Keymaps
 
