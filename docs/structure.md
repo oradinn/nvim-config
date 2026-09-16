@@ -13,7 +13,8 @@
 │   │   └── lazy.lua            # bootstraps and configures lazy.nvim itself
 │   └── plugins/
 │       ├── ai/
-│       │   └── claudecode.lua  # Claude Code IDE integration (coder/claudecode.nvim)
+│       │   ├── claudecode.lua    # Claude Code IDE integration (coder/claudecode.nvim)
+│       │   └── codecompanion.lua # Cline-equivalent assistant (olimorris/codecompanion.nvim)
 │       ├── completion/
 │       │   └── nvim-cmp.lua    # nvim-cmp + LuaSnip + friendly-snippets
 │       ├── editor/

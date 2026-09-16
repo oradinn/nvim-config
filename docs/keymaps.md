@@ -4,6 +4,17 @@ Leader key is `<Space>`. Press `<leader>?` at any time to open
 [which-key](https://github.com/folke/which-key.nvim) and browse everything
 available from the current mode/buffer.
 
+## CodeCompanion (`lua/plugins/ai/codecompanion.lua`)
+
+See [AI in Neovim → CodeCompanion](ai.md#codecompanion-a-cline-equivalent) for
+setup and how it connects to an OpenAI-compatible in-house LLM.
+
+| Mode | Keys | Action |
+|---|---|---|
+| n, v | `<leader>ai` | Toggle the CodeCompanion chat |
+| n, v | `<leader>ap` | Open the CodeCompanion action palette |
+| v | `<leader>av` | Add selection to the CodeCompanion chat |
+
 ## Claude Code (`lua/plugins/ai/claudecode.lua`)
 
 See [Claude Code](ai.md) for what the plugin does and how to point it at a

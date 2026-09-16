@@ -49,5 +49,5 @@ nav:
   - Structure: structure.md
   - Keymaps: keymaps.md
   - Plugins: plugins.md
-  - Claude Code: ai.md
+  - AI in Neovim: ai.md
   - Changelog: changelog.md
