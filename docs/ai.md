@@ -19,26 +19,44 @@ needed.
 
 ## Configure it
 
-Export three environment variables from your shell profile
-(`~/.bashrc`/`~/.zshrc`) — **never put them in this repo**:
+Credentials live in `~/.config/codecompanion/` — a plain directory of small
+text files, entirely outside `~/.config/nvim` (this repo), never committed:
 
-| Variable | Purpose |
+```bash
+mkdir -p -m 700 ~/.config/codecompanion
+printf '%s' "https://your-gateway:port/api" > ~/.config/codecompanion/base_url
+printf '%s' "sk-..."                        > ~/.config/codecompanion/api_key
+printf '%s' "your-model-id"                 > ~/.config/codecompanion/model
+chmod 600 ~/.config/codecompanion/*
+```
+
+| File | Purpose |
 |---|---|
-| `CODECOMPANION_BASE_URL` | Base URL of your OpenAI-compatible gateway (e.g. `https://your-gateway:port/api` — CodeCompanion appends `chat_url` to this) |
-| `CODECOMPANION_API_KEY` | API key for that endpoint |
-| `CODECOMPANION_MODEL` | Model ID to request (optional — falls back to a placeholder default in the plugin file if unset) |
-
-If your dotfiles are themselves a git repo, put the `export` lines in a file
-that repo gitignores (e.g. `~/.zshrc.local`, sourced from the tracked
-`~/.zshrc`) rather than the tracked file directly.
+| `base_url` | Base URL of your OpenAI-compatible gateway (CodeCompanion appends `chat_url` from the plugin file to this) |
+| `api_key` | API key for that endpoint |
+| `model` | Model ID to request — optional, falls back to a placeholder default in the plugin file if the file doesn't exist |
 
 `lua/plugins/ai/codecompanion.lua` never contains a literal value for any of
-these — `env.url`/`env.api_key` are the *names* of environment variables,
-resolved by CodeCompanion itself via `os.getenv()` on every request (verified
-in `codecompanion.nvim`'s own `adapters/utils/init.lua`), and
-`CODECOMPANION_MODEL` is read the same way in the plugin file. If your
-gateway's chat endpoint isn't at `{base_url}/chat/completions`, adjust the
-`chat_url` field in that file (not a secret, fine to edit/commit).
+these — `env.url`/`env.api_key` use CodeCompanion's built-in `file:` prefix
+(read fresh from disk on every request; confirmed in `codecompanion.nvim`'s
+own `adapters/utils/init.lua`), and `model` is read the same way via a small
+helper in the plugin file. Since it's a file rather than a shell-exported
+environment variable, it's only ever read when explicitly opened — no risk of
+leaking through `/proc/<pid>/environ` or a child process inheriting it
+unintentionally.
+
+If your gateway's chat endpoint isn't at `{base_url}/chat/completions`,
+adjust the `chat_url` field in the plugin file (not a secret, fine to
+edit/commit).
+
+**Prefer environment variables instead?** They still work — CodeCompanion's
+`env` fields also resolve a plain string as an environment variable *name* if
+one by that name is set (falling through to the file check otherwise). Export
+`CODECOMPANION_BASE_URL`/`CODECOMPANION_API_KEY` from your shell profile and
+change `env.url`/`env.api_key` in the plugin file to those names instead of
+the `file:` paths. If your dotfiles are themselves a git repo, put the
+`export` lines in a file that repo gitignores (e.g. `~/.zshrc.local`, sourced
+from the tracked `~/.zshrc`) rather than the tracked file directly.
 
 ## Keymaps
 
@@ -47,7 +65,7 @@ See [Keymaps → CodeCompanion](keymaps.md#codecompanion-luapluginsaicodecompani
 ## Verify
 
 1. `git -C ~/.config/nvim status` should show nothing related to the values
-   above after exporting them — confirms they're not in this repo.
+   above — confirms they're not in this repo.
 2. `:checkhealth codecompanion` in Neovim — checks the plugin's own setup.
 3. `<leader>ai` to open the chat, ask something simple, confirm you get a
    real response back from your in-house model.

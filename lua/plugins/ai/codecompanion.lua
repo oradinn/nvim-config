@@ -3,10 +3,20 @@
 -- communautaire "openai_compatible" — sans passerelle de traduction. Voir
 -- docs/ai.md.
 --
--- Rien de sensible ici : `env.url`/`env.api_key` sont de simples NOMS de
--- variables d'environnement que CodeCompanion résout lui-même via
--- os.getenv() à chaque requête (voir lua/codecompanion/adapters/utils dans
--- le plugin) — jamais une valeur littérale, jamais commité.
+-- Rien de sensible ici : `env.url`/`env.api_key` utilisent le préfixe
+-- `file:` de CodeCompanion (voir adapters/utils/init.lua dans le plugin) —
+-- le contenu est lu depuis ~/.config/codecompanion/ à chaque requête,
+-- jamais une valeur littérale, jamais commité. Voir docs/ai.md pour la mise
+-- en place de ce dossier.
+local function read_config_file(name, default)
+  local path = vim.fs.normalize("~/.config/codecompanion/" .. name)
+  local ok, lines = pcall(vim.fn.readfile, path)
+  if not ok or not lines[1] then
+    return default
+  end
+  return vim.trim(lines[1])
+end
+
 return {
   "olimorris/codecompanion.nvim",
   dependencies = {
@@ -26,10 +36,9 @@ return {
         in_house = function()
           return require("codecompanion.adapters").extend("openai_compatible", {
             env = {
-              -- Noms de variables d'environnement, pas des valeurs : voir
-              -- docs/ai.md pour où et comment les définir (jamais dans ce dépôt).
-              url = "CODECOMPANION_BASE_URL",
-              api_key = "CODECOMPANION_API_KEY",
+              -- Lus depuis des fichiers, jamais des valeurs littérales.
+              url = "file:~/.config/codecompanion/base_url",
+              api_key = "file:~/.config/codecompanion/api_key",
               -- Ajusté sur le chemin réel de la passerelle (baseURL + "/chat/completions",
               -- sans préfixe /v1) — à adapter si la vôtre diffère.
               chat_url = "/chat/completions",
@@ -37,7 +46,7 @@ return {
             schema = {
               model = {
                 default = function()
-                  return os.getenv("CODECOMPANION_MODEL") or "model-name-small"
+                  return read_config_file("model", "model-name-small")
                 end,
               },
             },
