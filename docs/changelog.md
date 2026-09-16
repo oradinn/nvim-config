@@ -1,5 +1,16 @@
 # Changelog
 
+## Fix invalid filename modifier and wrong `J` description
+
+`lua/core/keymaps.lua`'s "copy relative path" keymap used
+`expand("%:f")` — `:f` is not a valid Vim filename modifier (the
+documented set is `:p`, `:8`, `:~`, `:.`, `:h`, `:t`, `:r`, `:e`,
+`:s`/`:gs`); the cwd-relative path modifier is `:.`. Fixed to
+`expand("%:.")`.
+
+Also fixed the normal-mode `J` keymap's description — it joins the line
+below into the current one and keeps the cursor in place, not "move down".
+
 ## Fix lost diagnostic/telescope/lualine icons (again)
 
 A previous edit that replaced corrupted `?` icon glyphs (see "Restructure
