@@ -1,5 +1,23 @@
 # Changelog
 
+## Add directory-copy and directory-aware terminal keymaps
+
+None of the existing path-copy keymaps (`<leader><F1>`/`<F2>`/`<F3>`) copy
+just the current buffer's *directory*, and there was no keymap to open a
+terminal at all — `:terminal` always opens in Neovim's global cwd, unrelated
+to whatever buffer is open. Added, in `lua/core/keymaps.lua`:
+
+- `<leader><F4>` — copy the current buffer's directory to the clipboard
+  (same `expand("%:p:h")` pattern as the other three).
+- `<leader>tt` — open a terminal split `:lcd`'d to the current buffer's
+  directory (window-local, doesn't affect other windows/buffers).
+- `<leader>tp` — same, but `:lcd`'d to the project root (`vim.fs.root(0,
+  ".git")`), falling back to the buffer's directory if no `.git` is found.
+
+Verified headless: `vim.fs.root` correctly resolves this repo's root from a
+nested file, and both terminal keymaps land in the expected directory
+(buffer's own dir for `tt`, repo root for `tp`).
+
 ## Add mkdnflow.nvim for markdown link/heading navigation
 
 `gf` treats `file.md#heading`-style links as one literal (nonexistent)

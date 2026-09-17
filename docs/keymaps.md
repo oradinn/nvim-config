@@ -22,6 +22,9 @@ in-house LLM.
 | n | `<leader><F1>` | Copy absolute path of current file to the clipboard |
 | n | `<leader><F2>` | Copy relative path of current file to the clipboard |
 | n | `<leader><F3>` | Copy filename of current file to the clipboard |
+| n | `<leader><F4>` | Copy current buffer's directory to the clipboard |
+| n | `<leader>tt` | Open a terminal split in the current buffer's directory |
+| n | `<leader>tp` | Open a terminal split in the project root (nearest ancestor with `.git`) |
 | n | `<leader>pv` | Open netrw (file explorer) |
 | n | `<leader>u` | Show the undo tree (`:UndotreeShow`) |
 | v | `J` | Move the selected block down one line |

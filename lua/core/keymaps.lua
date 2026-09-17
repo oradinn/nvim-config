@@ -8,6 +8,8 @@ vim.keymap.set("n", "<leader><F1>", ":let @+ = expand(\"%:p\")<CR>", {desc = "Co
 vim.keymap.set("n", "<leader><F2>", ":let @+ = expand(\"%:.\")<CR>", {desc = "Copy relative path to clipboard", noremap = true})
 -- filename to clipboard
 vim.keymap.set("n", "<leader><F3>", ":let @+ = expand(\"%:t\")<CR>", {desc = "Copy filename to clipboard", noremap = true})
+-- current buffer's directory to clipboard
+vim.keymap.set("n", "<leader><F4>", ":let @+ = expand(\"%:p:h\")<CR>", {desc = "Copy buffer's directory to clipboard", noremap = true})
 
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex, {desc = "Go back to Explorer"})
 vim.keymap.set("n", "<leader>u", ":UndotreeShow<CR>", {desc = "Show undotree window"})
@@ -33,3 +35,24 @@ vim.keymap.set({ "n", "v" }, "<leader>d", "\"_d", {desc = "Delete to void regist
 
 -- terminal mode
 vim.keymap.set( "t", "<Esc>", "<C-\\><C-n>", {noremap = true, silent = true, desc = "Back to normal mode from terminal"})
+
+-- Ouvre un terminal dans un split, avec le répertoire de travail réglé sur
+-- `dir` (local à la fenêtre du terminal via :lcd, donc sans effet sur les
+-- autres fenêtres/buffers).
+local function open_terminal_in(dir)
+  vim.cmd("botright split")
+  vim.cmd.lcd(dir)
+  vim.cmd.terminal()
+  vim.cmd.startinsert()
+end
+
+vim.keymap.set("n", "<leader>tt", function()
+  open_terminal_in(vim.fn.expand("%:p:h"))
+end, {desc = "Open terminal in current buffer's directory"})
+
+vim.keymap.set("n", "<leader>tp", function()
+  -- Racine du projet = premier dossier parent contenant .git ; à défaut, le
+  -- dossier du buffer courant (fichier hors dépôt, ou aucun buffer ouvert).
+  local root = vim.fs.root(0, ".git") or vim.fn.expand("%:p:h")
+  open_terminal_in(root)
+end, {desc = "Open terminal in project root"})
