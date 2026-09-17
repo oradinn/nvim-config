@@ -58,33 +58,39 @@ return {
       },
     })
 
-    -- Python (pylsp, installé via mason, cf. lua/plugins/lsp/mason.lua)
-    vim.lsp.config("pylsp", {
+    -- Python : basedpyright (types, complétion, hover) + ruff (lint/format,
+    -- très rapide). On désactive le hover de ruff pour éviter un doublon
+    -- avec celui, plus complet (types inclus), de basedpyright. Les deux
+    -- sont installés via mason, cf. lua/plugins/lsp/mason.lua. Détails et
+    -- justification du choix dans docs/lsp.md.
+    vim.lsp.config("basedpyright", {
       settings = {
-        pylsp = {
-          plugins = {
-            -- formatter options
-            black = { enabled = true },
-            autopep8 = { enabled = false },
-            yapf = { enabled = false },
-            -- linter options
-            pyflakes = { enabled = false },
-            pycodestyle = {
-              enabled = true,
-              ignore = { "E501" },
-            },
-            -- type checker
-            pylsp_mypy = { enabled = true },
-            -- auto-completion options
-            jedi_completion = { fuzzy = true },
-            -- import sorting
-            pylsp_isort = { enabled = true },
-            rope_completion = { enabled = true },
-            rope_autoimport = {
-              enabled = true,
-            },
+        basedpyright = {
+          analysis = {
+            -- Analyse tout le workspace, pas seulement les fichiers ouverts
+            diagnosticMode = "workspace",
           },
         },
+      },
+    })
+
+    vim.lsp.config("ruff", {
+      on_attach = function(client)
+        client.server_capabilities.hoverProvider = false
+      end,
+    })
+
+    -- C++ (clangd, installé via mason). Nécessite un compile_commands.json
+    -- (projets CMake) ou un compile_flags.txt pour résoudre correctement
+    -- les #include relatifs — voir docs/lsp.md pour la configuration côté
+    -- projet (CMAKE_EXPORT_COMPILE_COMMANDS + fichier .clangd).
+    vim.lsp.config("clangd", {
+      cmd = {
+        "clangd",
+        "--background-index",
+        "--clang-tidy",
+        "--completion-style=detailed",
+        "--header-insertion=iwyu",
       },
     })
   end,

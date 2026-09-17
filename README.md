@@ -26,6 +26,7 @@ under [`docs/`](docs/):
 - [Structure](docs/structure.md)
 - [Keymaps](docs/keymaps.md)
 - [Plugins](docs/plugins.md)
+- [LSP](docs/lsp.md)
 - [AI in Neovim](docs/ai.md)
 - [Changelog](docs/changelog.md)
 

@@ -1,5 +1,98 @@
 # Changelog
 
+## Prefer nvim-tree's root for the project-root terminal keymap
+
+`<leader>tp` used `.git`-ancestor detection alone for "project root". Now it
+checks nvim-tree's current root first (`require("nvim-tree.api").tree.get_nodes().absolute_path`)
+and only falls back to `.git` detection if nvim-tree hasn't been opened yet.
+This keeps the terminal consistent with whatever the sidebar is actually
+showing, including after manually re-rooting it with
+`change_root_to_node`/`change_root_to_parent` — something `.git` detection
+alone has no way to know about.
+
+Verified headless: falls back to the `.git` root correctly when nvim-tree
+has never been opened, and correctly follows nvim-tree's root after
+`change_root` points it at an arbitrary subdirectory (not the `.git` root).
+
+## Add directory-copy and directory-aware terminal keymaps
+
+None of the existing path-copy keymaps (`<leader><F1>`/`<F2>`/`<F3>`) copy
+just the current buffer's *directory*, and there was no keymap to open a
+terminal at all — `:terminal` always opens in Neovim's global cwd, unrelated
+to whatever buffer is open. Added, in `lua/core/keymaps.lua`:
+
+- `<leader><F4>` — copy the current buffer's directory to the clipboard
+  (same `expand("%:p:h")` pattern as the other three).
+- `<leader>tt` — open a terminal split `:lcd`'d to the current buffer's
+  directory (window-local, doesn't affect other windows/buffers).
+- `<leader>tp` — same, but `:lcd`'d to the project root (`vim.fs.root(0,
+  ".git")`), falling back to the buffer's directory if no `.git` is found.
+
+Verified headless: `vim.fs.root` correctly resolves this repo's root from a
+nested file, and both terminal keymaps land in the expected directory
+(buffer's own dir for `tt`, repo root for `tp`).
+
+## Add mkdnflow.nvim for markdown link/heading navigation
+
+`gf` treats `file.md#heading`-style links as one literal (nonexistent)
+filename, so it can't resolve the `#heading` anchor — and there was no way
+to jump directly to a section heading either. Added
+[`mkdnflow.nvim`](https://github.com/jakewvincent/mkdnflow.nvim)
+(`lua/plugins/editor/mkdnflow.lua`), which resolves both.
+
+Only its `links`, `cursor`, `buffers`, and `paths` modules are enabled —
+`tables`, `lists`, `to_do`, and `folds` are off, since their default
+keymaps (`o`/`O`, `<leader>f`/`<leader>F`) would otherwise shadow existing
+ones (`<leader>F` is already "format buffer"). Confirmed via mkdnflow's own
+`command_deps` table that disabling a module fully unregisters the keymaps
+tied to it, not just changes their behavior. `MkdnCreateLinkFromClipboard`
+is separately disabled, since its default `<leader>p` binding collides with
+"paste over selection" (`lua/core/keymaps.lua`).
+
+Verified headless: following a `[text](target.md#second-section)` link
+opens `target.md` and lands the cursor exactly on `## Second section`, and
+`<leader>f`/`<leader>F`/`<leader>p`/`o` resolve to their original global
+mappings inside a markdown buffer (not mkdnflow's).
+
+Documented in [LSP → Markdown](lsp.md#navigating-links-and-headings) and
+[Keymaps → Markdown navigation](keymaps.md#markdown-navigation-luapluginseditormkdnflowlua).
+Updated `docs/plugins.md` and `docs/structure.md`.
+
+## Switch Python LSP to basedpyright + ruff, add C++ project guidance and in-buffer markdown rendering
+
+Replaced `pylsp` with [`basedpyright`](https://detachhead.github.io/basedpyright)
+(types/completion/hover) + [`ruff`](https://docs.astral.sh/ruff/editors/)
+(lint/format, via its native `ruff server`, not the deprecated `ruff-lsp`) —
+faster and more actively developed than `pylsp`. `ruff`'s hover is disabled
+(`client.server_capabilities.hoverProvider = false`) so `basedpyright`'s
+richer, type-aware hover is the one that's used. `basedpyright` runs with
+`diagnosticMode = "workspace"` so issues surface in files you haven't opened
+yet.
+
+`clangd` is now started with explicit flags (`--background-index`,
+`--clang-tidy`, `--completion-style=detailed`, `--header-insertion=iwyu`),
+verified against the installed binary's own `--help-hidden` output rather
+than assumed from memory. Added [LSP → C++](lsp.md#c) documenting why
+`#include`s sometimes fail to resolve (no `compile_commands.json`) and the
+fix for both real use cases: CMake projects (e.g. using
+[`onera/project_utils`](https://github.com/onera/project_utils)), where
+`CMAKE_EXPORT_COMPILE_COMMANDS=ON` plus a symlink or `.clangd` file fixes it,
+and no-build-system course exercises, where same-directory quoted includes
+already work with zero config and a `compile_flags.txt` covers
+cross-directory cases.
+
+Added [`render-markdown.nvim`](https://github.com/MeanderingProgrammer/render-markdown.nvim)
+(`lua/plugins/editor/markdown.lua`) for in-buffer markdown rendering
+(headers, bold, code blocks, tables) using the Treesitter parsers already
+installed — no browser, no Node.js. Chosen over
+[`markdown-preview.nvim`](https://github.com/iamcco/markdown-preview.nvim)
+specifically because that one needs Node.js to build its bundled preview
+server, unavailable on the target machine.
+
+New [LSP](lsp.md) doc page covers all of the above. Updated `docs/index.md`,
+`docs/plugins.md`, `docs/structure.md`, `mkdocs.yml`, and `README.md`
+accordingly.
+
 ## Regenerate the lock file
 
 `lazy-lock.json` hadn't been updated since the initial commit, so

@@ -30,7 +30,11 @@ return {
       -- Ça permettra à votre configuration d'être plus portable
       ensure_installed = {
         "lua_ls",
-        "pylsp",
+        -- Python : basedpyright pour les types/la complétion, ruff pour le
+        -- lint/format (rapide, écrit en Rust) — cf. lua/plugins/lsp/lspconfig.lua
+        -- et docs/lsp.md pour le détail de la répartition des rôles.
+        "basedpyright",
+        "ruff",
         "clangd",
       },
     })
