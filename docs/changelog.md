@@ -1,5 +1,24 @@
 # Changelog
 
+## Move telescope.nvim from the frozen 0.1.x branch to master
+
+`telescope.nvim` was pinned to `0.1.x`, whose tip (`a0bbec2`) hadn't moved
+since 2024-05-24 — telescope's active development, including everything
+tagged `v0.2.0`+, happens on `master` now (last commit 2026-08-17 as of this
+change). Checked that the APIs this config actually calls
+(`actions.move_selection_next`/`move_selection_previous`,
+`telescope.load_extension`, and the `prompt_prefix`/`selection_caret`/
+`path_display`/`file_ignore_patterns` config keys) are all unchanged on
+`master` before switching — unlike nvim-treesitter's `master`→`main` move,
+this one isn't a breaking rewrite.
+
+Updated `branch = "0.1.x"` to `"master"` in `lua/plugins/editor/telescope.lua`
+and regenerated `lazy-lock.json`'s `telescope.nvim` entry only (restored
+every other plugin to its exact locked commit first, then ran a targeted
+`:Lazy update telescope.nvim`, to avoid pulling in unrelated version bumps).
+Verified headless: all four Telescope keymaps still resolve, and
+`:Telescope find_files` opens and closes without error.
+
 ## Prefer nvim-tree's root for the project-root terminal keymap
 
 `<leader>tp` used `.git`-ancestor detection alone for "project root". Now it
