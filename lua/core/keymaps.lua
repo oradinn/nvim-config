@@ -55,8 +55,13 @@ vim.keymap.set("n", "<leader>tt", function()
 end, {desc = "Open terminal in current buffer's directory"})
 
 vim.keymap.set("n", "<leader>tp", function()
-  -- Racine du projet = premier dossier parent contenant .git ; à défaut, le
-  -- dossier du buffer courant (fichier hors dépôt, ou aucun buffer ouvert).
-  local root = vim.fs.root(0, ".git") or vim.fn.expand("%:p:h")
+  -- Racine du projet : celle affichée par nvim-tree si l'explorateur a déjà
+  -- été ouvert (cohérente avec la sidebar, y compris après un
+  -- change_root_to_node/change_root_to_parent manuel) ; à défaut, le premier
+  -- dossier parent contenant .git ; à défaut, le dossier du buffer courant.
+  local nvim_tree_root_node = require("nvim-tree.api").tree.get_nodes()
+  local root = (nvim_tree_root_node and nvim_tree_root_node.absolute_path)
+    or vim.fs.root(0, ".git")
+    or vim.fn.expand("%:p:h")
   open_terminal_in(root)
 end, {desc = "Open terminal in project root"})

@@ -1,5 +1,19 @@
 # Changelog
 
+## Prefer nvim-tree's root for the project-root terminal keymap
+
+`<leader>tp` used `.git`-ancestor detection alone for "project root". Now it
+checks nvim-tree's current root first (`require("nvim-tree.api").tree.get_nodes().absolute_path`)
+and only falls back to `.git` detection if nvim-tree hasn't been opened yet.
+This keeps the terminal consistent with whatever the sidebar is actually
+showing, including after manually re-rooting it with
+`change_root_to_node`/`change_root_to_parent` — something `.git` detection
+alone has no way to know about.
+
+Verified headless: falls back to the `.git` root correctly when nvim-tree
+has never been opened, and correctly follows nvim-tree's root after
+`change_root` points it at an arbitrary subdirectory (not the `.git` root).
+
 ## Add directory-copy and directory-aware terminal keymaps
 
 None of the existing path-copy keymaps (`<leader><F1>`/`<F2>`/`<F3>`) copy
