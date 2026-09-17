@@ -1,5 +1,31 @@
 # Changelog
 
+## Add mkdnflow.nvim for markdown link/heading navigation
+
+`gf` treats `file.md#heading`-style links as one literal (nonexistent)
+filename, so it can't resolve the `#heading` anchor — and there was no way
+to jump directly to a section heading either. Added
+[`mkdnflow.nvim`](https://github.com/jakewvincent/mkdnflow.nvim)
+(`lua/plugins/editor/mkdnflow.lua`), which resolves both.
+
+Only its `links`, `cursor`, `buffers`, and `paths` modules are enabled —
+`tables`, `lists`, `to_do`, and `folds` are off, since their default
+keymaps (`o`/`O`, `<leader>f`/`<leader>F`) would otherwise shadow existing
+ones (`<leader>F` is already "format buffer"). Confirmed via mkdnflow's own
+`command_deps` table that disabling a module fully unregisters the keymaps
+tied to it, not just changes their behavior. `MkdnCreateLinkFromClipboard`
+is separately disabled, since its default `<leader>p` binding collides with
+"paste over selection" (`lua/core/keymaps.lua`).
+
+Verified headless: following a `[text](target.md#second-section)` link
+opens `target.md` and lands the cursor exactly on `## Second section`, and
+`<leader>f`/`<leader>F`/`<leader>p`/`o` resolve to their original global
+mappings inside a markdown buffer (not mkdnflow's).
+
+Documented in [LSP → Markdown](lsp.md#navigating-links-and-headings) and
+[Keymaps → Markdown navigation](keymaps.md#markdown-navigation-luapluginseditormkdnflowlua).
+Updated `docs/plugins.md` and `docs/structure.md`.
+
 ## Switch Python LSP to basedpyright + ruff, add C++ project guidance and in-buffer markdown rendering
 
 Replaced `pylsp` with [`basedpyright`](https://detachhead.github.io/basedpyright)

@@ -28,6 +28,7 @@ see [Structure](structure.md) for why.
 | [which-key.nvim](https://github.com/folke/which-key.nvim) | `editor/whichkey.lua` | Popup that shows available keybindings as you type a prefix. |
 | [undotree](https://github.com/mbbill/undotree) | `editor/undotree.lua` | Visual undo history, toggled with `<leader>u`. |
 | [render-markdown.nvim](https://github.com/MeanderingProgrammer/render-markdown.nvim) | `editor/markdown.lua` | In-buffer markdown rendering (headers, bold, code blocks, tables) — no browser or Node.js needed. See [LSP → Markdown](lsp.md#markdown) for why this was chosen over a browser preview. |
+| [mkdnflow.nvim](https://github.com/jakewvincent/mkdnflow.nvim) | `editor/mkdnflow.lua` | Markdown link/heading navigation — follows `file.md#heading` anchors, jumps between headings. Only its navigation modules are enabled; see [LSP → Markdown](lsp.md#navigating-links-and-headings). |
 | [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) | `editor/plenary.lua` | Lua utility library other plugins (Telescope in particular) depend on. |
 
 ## LSP

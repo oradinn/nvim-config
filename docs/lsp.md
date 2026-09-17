@@ -140,3 +140,26 @@ becomes available and genuinely rich rendering (real image sizes, complex
 tables, Mermaid diagrams) is worth the extra dependency, `markdown-preview.nvim`
 is the one to add — nothing in the current setup conflicts with adding it
 alongside `render-markdown.nvim` later.
+
+### Navigating links and headings
+
+[`mkdnflow.nvim`](https://github.com/jakewvincent/mkdnflow.nvim)
+(`lua/plugins/editor/mkdnflow.lua`) adds link/heading *navigation* on top of
+`render-markdown.nvim`'s rendering — the two are complementary, not
+alternatives. It resolves `[text](file.md#heading)`-style links, including
+the `#heading` anchor (opens `file.md` and jumps straight to that heading),
+which plain `gf` can't do (`gf` treats `file.md#heading` as one literal,
+nonexistent filename). See [Keymaps → Markdown navigation](keymaps.md#markdown-navigation-luapluginseditormkdnflowlua)
+for the bindings.
+
+Only the navigation modules are enabled (`links`, `cursor`, `buffers`,
+`paths`); `tables`, `lists`, `to_do`, and `folds` are turned off in
+`lua/plugins/editor/mkdnflow.lua` — not something this config asked for, and
+their default keymaps (`o`/`O` for list continuation, `<leader>f`/`<leader>F`
+for section folding) would otherwise shadow existing ones (`<leader>F` is
+already "format buffer"). `MkdnCreateLinkFromClipboard` is explicitly
+disabled too, since its default `<leader>p` binding collides with "paste
+over selection" (`lua/core/keymaps.lua`). Verified against mkdnflow's own
+`command_deps` table (`lua/mkdnflow.lua` upstream) that disabling a module
+fully unregisters the keymaps that depend on it, rather than just changing
+their behavior.

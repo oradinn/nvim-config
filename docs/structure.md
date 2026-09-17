@@ -18,6 +18,7 @@
 │       │   └── nvim-cmp.lua    # nvim-cmp + LuaSnip + friendly-snippets
 │       ├── editor/
 │       │   ├── markdown.lua    # render-markdown.nvim: in-buffer markdown rendering
+│       │   ├── mkdnflow.lua    # mkdnflow.nvim: markdown link/heading navigation
 │       │   ├── nvim-tree.lua
 │       │   ├── plenary.lua     # shared Lua utility library (Telescope's dependency)
 │       │   ├── telescope.lua

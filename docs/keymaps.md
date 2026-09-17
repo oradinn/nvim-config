@@ -58,6 +58,25 @@ Active once `nvim-lspconfig` attaches to a buffer.
 | n, x | `<leader>F` | Format buffer |
 | n | `<leader>rs` | Restart the LSP client (`:LspRestart`) |
 
+## Markdown navigation (`lua/plugins/editor/mkdnflow.lua`)
+
+Active in markdown buffers. Only navigation is enabled — see
+[LSP → Markdown](lsp.md#markdown) for why tables/lists/todo/folding are
+turned off.
+
+| Mode | Keys | Action |
+|---|---|---|
+| n, v | `<CR>` | Follow the link under the cursor (resolves `file.md#heading` anchors too) |
+| n | `<BS>` | Go back to the previous buffer |
+| n | `<Del>` | Go forward |
+| n | `<Tab>` / `<S-Tab>` | Jump to next / previous link |
+| n | `]]` / `[[` | Jump to next / previous heading |
+| n | `<F2>` | Move the link's source file and update references to it |
+| n | `<M-CR>` | Remove link formatting, keep the text |
+| v | `<M-CR>` | Wrap selection with a span and generate an ID |
+| n | `yaa` | Yank the current heading as an anchor link |
+| n | `yfa` | Yank the current heading as a full file+anchor link |
+
 ## Telescope (`lua/plugins/editor/telescope.lua`)
 
 | Mode | Keys | Action |
