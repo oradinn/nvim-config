@@ -43,7 +43,7 @@ vim.keymap.set( "t", "<Esc>", "<C-\\><C-n>", {noremap = true, silent = true, des
 -- son propre `cd` après coup et l'écraser. On envoie donc explicitement un
 -- `cd` dans le terminal une fois le shell démarré, pour avoir le dernier mot.
 local function open_terminal_in(dir)
-  vim.cmd("botright split")
+  vim.cmd("botright vsplit")
   vim.cmd.lcd(dir)
   vim.cmd.terminal()
   vim.fn.chansend(vim.bo.channel, "cd " .. vim.fn.shellescape(dir) .. "\n")
