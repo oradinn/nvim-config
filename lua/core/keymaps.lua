@@ -38,11 +38,15 @@ vim.keymap.set( "t", "<Esc>", "<C-\\><C-n>", {noremap = true, silent = true, des
 
 -- Ouvre un terminal dans un split, avec le répertoire de travail réglé sur
 -- `dir` (local à la fenêtre du terminal via :lcd, donc sans effet sur les
--- autres fenêtres/buffers).
+-- autres fenêtres/buffers). :lcd ne fixe que le répertoire de départ du
+-- process : si le shell est interactif, son rc (~/.bashrc, etc.) peut lancer
+-- son propre `cd` après coup et l'écraser. On envoie donc explicitement un
+-- `cd` dans le terminal une fois le shell démarré, pour avoir le dernier mot.
 local function open_terminal_in(dir)
   vim.cmd("botright split")
   vim.cmd.lcd(dir)
   vim.cmd.terminal()
+  vim.fn.chansend(vim.bo.channel, "cd " .. vim.fn.shellescape(dir) .. "\n")
   vim.cmd.startinsert()
 end
 
