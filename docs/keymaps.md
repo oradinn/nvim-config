@@ -52,7 +52,7 @@ Active once `nvim-lspconfig` attaches to a buffer.
 | n | `gs` | Signature help |
 | n | `<leader>rn` | Smart rename |
 | n | `<leader>D` | Buffer diagnostics (Telescope) |
-| n | `<leader>d` | Line diagnostics (floating window) |
+| n | `<leader>cd` | Line diagnostics (floating window) |
 | n | `[d` / `]d` | Previous / next diagnostic |
 | n | `K` | Hover documentation |
 | n, x | `<leader>F` | Format buffer |

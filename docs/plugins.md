@@ -14,7 +14,7 @@ see [Structure](structure.md) for why.
 
 | Plugin | File | Notes |
 |---|---|---|
-| [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) | `completion/nvim-cmp.lua` | Completion engine. Sources are ordered by priority: `nvim_lsp` / `nvim_lua` / `luasnip` first, `buffer` / `path` / `emoji` as fallback. |
+| [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) | `completion/nvim-cmp.lua` | Completion engine. Sources are ordered by priority: `nvim_lsp` / `luasnip` first, `buffer` / `path` / `emoji` as fallback. |
 | [LuaSnip](https://github.com/L3MON4D3/LuaSnip) + [friendly-snippets](https://github.com/rafamadriz/friendly-snippets) | same file | Snippet engine and a ready-made snippet collection, loaded lazily on `InsertEnter`. |
 | [lspkind.nvim](https://github.com/onsails/lspkind.nvim) | same file | Adds VS Code-style icons and a `[LSP]`/`[Buffer]`/... suffix to completion entries. |
 
@@ -26,6 +26,7 @@ see [Structure](structure.md) for why.
 | [nvim-tree.lua](https://github.com/nvim-tree/nvim-tree.lua) | `editor/nvim-tree.lua` | File explorer sidebar, toggled with `<leader>e`. |
 | [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) | `editor/treesitter.lua` | Syntax highlighting, indentation, and incremental selection for the languages listed in `ensure_installed`. |
 | [which-key.nvim](https://github.com/folke/which-key.nvim) | `editor/whichkey.lua` | Popup that shows available keybindings as you type a prefix. |
+| [undotree](https://github.com/mbbill/undotree) | `editor/undotree.lua` | Visual undo history, toggled with `<leader>u`. |
 | [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) | `editor/plenary.lua` | Lua utility library other plugins (Telescope in particular) depend on. |
 
 ## LSP

@@ -6,8 +6,8 @@ return {
     style = "moon",
     transparent = true,
   },
-  config = function()
-    -- load the colorscheme here
-    vim.cmd([[colorscheme tokyonight]])
+  config = function(_, opts)
+    require("tokyonight").setup(opts)
+    vim.cmd.colorscheme("tokyonight")
   end,
 }

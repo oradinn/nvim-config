@@ -15,8 +15,10 @@ return {
       defaults = {
 
         -- Parce que c'est joli
+        -- selection_caret en \u{...} pour éviter qu'un outil non compatible
+        -- UTF-8 ne l'efface silencieusement (voir docs/changelog.md).
         prompt_prefix = "🔍 ",
-        selection_caret = " ",
+        selection_caret = "\u{f054} ",
         path_display = { "smart" },
         file_ignore_patterns = { ".git/", "node_modules" },
 
