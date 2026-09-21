@@ -33,8 +33,8 @@
    nvim
    ```
 
-4. Once plugins are installed, open `:Mason` and confirm `lua_ls`, `pylsp`, and
-   `clangd` (the servers listed in [`mason.lua`](https://github.com/oradinn/nvim-config/blob/main/lua/plugins/lsp/mason.lua)) installed successfully.
+4. Once plugins are installed, open `:Mason` and confirm `lua_ls`, `basedpyright`,
+   `ruff`, and `clangd` (the servers listed in [`mason.lua`](https://github.com/oradinn/nvim-config/blob/main/lua/plugins/lsp/mason.lua)) installed successfully.
 
 ## Keeping it up to date
 
@@ -42,3 +42,12 @@
 surfaces available plugin updates as an icon in the statusline (via
 `lualine.nvim`'s `lazy.status` component). Run `:Lazy update` to apply them, and
 `:Lazy` any time to open the plugin manager UI.
+
+`:Lazy update` rewrites `lazy-lock.json` with the new commit for every updated
+plugin — **commit that diff right after verifying the update works**, in the
+same change. `lazy-lock.json` is what makes an install reproducible (same role
+as `package-lock.json`/`Cargo.lock`): a plugin added or updated without its
+lock entry committed means a fresh install elsewhere silently grabs whatever
+that plugin's latest commit happens to be at install time, instead of the
+version you actually tested. This has bitten this repo before — see
+[Changelog → Regenerate the lock file](changelog.md#regenerate-the-lock-file).
