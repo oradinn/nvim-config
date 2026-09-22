@@ -24,6 +24,12 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz", {desc = "Page up but keep cursor in the 
 vim.keymap.set("n", "n", "nzzzv", {desc = "Go to next occurrence but keep cursor in the middle"})
 vim.keymap.set("n", "N", "Nzzzv", {desc = "Go to prev occurrence but keep cursor in the middle"})
 
+-- * and # normally follow 'ignorecase' but ignore 'smartcase' (see :help star),
+-- so they stay case-insensitive even with 'smartcase' on. Force \C to make
+-- them always case-sensitive, independent of the buffer-wide setting.
+vim.keymap.set("n", "*", [[/\<<C-r><C-w>\>\C<CR>]], {desc = "Search word under cursor forward (case-sensitive)"})
+vim.keymap.set("n", "#", [[?\<<C-r><C-w>\>\C<CR>]], {desc = "Search word under cursor backward (case-sensitive)"})
+
 -- greatest remap ever
 vim.keymap.set("x", "<leader>p", [["_dP]], {desc = "Paste over selection without overwriting register"})
 

@@ -11,7 +11,8 @@ opt.expandtab = true -- change les tabulations en espaces (don't feed the troll 
 opt.autoindent = true -- on garde l'indentation actuelle à la prochaine ligne
 
 -- recherche
-opt.ignorecase = false -- recherche sensible à la casse par défaut (/, ?, *, #)
+opt.ignorecase = true -- ignore la casse quand on recherche
+opt.smartcase = true -- sauf quand on fait une recherche avec des majuscules, on rebascule en sensible à la casse
 opt.hlsearch = true -- surlignage de toutes les occurences de la recherche en cours
 
 -- ligne du curseur

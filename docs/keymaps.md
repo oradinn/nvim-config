@@ -34,6 +34,8 @@ in-house LLM.
 | n | `<C-u>` | Half-page up, keep cursor centered |
 | n | `n` | Next search match, centered |
 | n | `N` | Previous search match, centered |
+| n | `*` | Search word under cursor forward (always case-sensitive, unlike stock `*`) |
+| n | `#` | Search word under cursor backward (always case-sensitive, unlike stock `#`) |
 | x | `<leader>p` | Paste over selection without overwriting the unnamed register |
 | n, v | `<leader>y` | Yank to the system clipboard |
 | n | `<leader>Y` | Yank line to the system clipboard |
