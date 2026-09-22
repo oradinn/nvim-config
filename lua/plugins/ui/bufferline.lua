@@ -6,6 +6,7 @@ return {
     options = {
       separator_style = "slant",
       offsets = { { filetype = "NvimTree", text = "", padding = 1 } },
+      middle_mouse_command = "bdelete! %d", -- clic molette sur un onglet : ferme le buffer
     },
   },
 }
