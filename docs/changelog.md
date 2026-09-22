@@ -1,5 +1,40 @@
 # Changelog
 
+## Add telescope-live-grep-args.nvim, repoint `<leader>fg` at it
+
+Plain `Telescope live_grep` (`<leader>fg`) had no way to restrict a search to
+a folder or filetype, or to pass ripgrep flags — every search ran across the
+whole cwd with no glob/type filtering, forcing an editor-side workaround
+after each grep. `telescope-live-grep-args.nvim` lets ripgrep args be typed
+in the same prompt as the pattern (e.g. `pattern -g '*.lua'`, `pattern -t lua`,
+`pattern -- some/folder`), including full regex, without hand-rolling a
+`vim.ui.input`-based keymap.
+
+Added `nvim-telescope/telescope-live-grep-args.nvim` to `dependencies` in
+`lua/plugins/editor/telescope.lua` (same "Telescope extension" pattern as
+`telescope-fzf-native.nvim` — no `build` step needed), set
+`extensions.live_grep_args.auto_quoting = true` in `telescope.setup({...})`
+so a typed pattern doesn't get mangled by ripgrep's own arg quoting, and
+added `telescope.load_extension("live_grep_args")` next to the existing
+`fzf` load. Repointed `<leader>fg` from `<cmd>Telescope live_grep<cr>` to
+`<cmd>Telescope live_grep_args<cr>`, keeping the same `<cmd>Telescope ...<cr>`
+keymap style as the other three Telescope keymaps (extensions auto-register
+a subcommand, so no Lua-function keymap was needed). `<leader>fx`, `<leader>ff`,
+and `<leader>fb` are untouched. Checked that the extension's own default
+insert-mode `<C-k>` (quote word under cursor) lives under
+`extensions.live_grep_args.mappings.i`, a separate config namespace from
+`defaults.mappings.i` (where this config's `<C-k>` → `move_selection_previous`
+lives) — confirmed there's no actual mapping collision since that block isn't
+being set here.
+
+No Neovim was available in the environment this change was made in, so
+`lazy-lock.json`'s new entry was added by hand instead of via `:Lazy
+install` — `git ls-remote --symref` gave the extension's default branch
+(`master`) and HEAD commit, matching the format of every other entry in the
+file. Run `:Lazy install` (or `:Lazy sync`) once on a real machine to
+confirm the pin resolves and the plugin installs cleanly, and verify
+`<leader>fg` opens `:Telescope live_grep_args` without error.
+
 ## Move telescope.nvim from the frozen 0.1.x branch to master
 
 `telescope.nvim` was pinned to `0.1.x`, whose tip (`a0bbec2`) hadn't moved

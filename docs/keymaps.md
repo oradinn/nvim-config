@@ -85,7 +85,7 @@ turned off.
 | Mode | Keys | Action |
 |---|---|---|
 | n | `<leader>ff` | Find files |
-| n | `<leader>fg` | Live grep |
+| n | `<leader>fg` | Live grep with args (type a pattern plus raw ripgrep flags, e.g. `pattern -g '*.lua'`, `pattern -t lua`, `pattern -- some/folder`, to restrict by filetype/glob/folder or use regex) |
 | n | `<leader>fb` | List buffers |
 | n | `<leader>fx` | Grep the word under the cursor |
 | i | `<C-j>` / `<C-k>` | Next / previous item in the picker |

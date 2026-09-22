@@ -22,7 +22,7 @@ see [Structure](structure.md) for why.
 
 | Plugin | File | Notes |
 |---|---|---|
-| [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) | `editor/telescope.lua` | Fuzzy finder for files, grep, buffers, and LSP pickers, backed by `telescope-fzf-native.nvim` for speed. |
+| [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) | `editor/telescope.lua` | Fuzzy finder for files, grep, buffers, and LSP pickers, backed by `telescope-fzf-native.nvim` for speed and [telescope-live-grep-args.nvim](https://github.com/nvim-telescope/telescope-live-grep-args.nvim) (`<leader>fg`) for regex/glob/folder-restricted grep. |
 | [nvim-tree.lua](https://github.com/nvim-tree/nvim-tree.lua) | `editor/nvim-tree.lua` | File explorer sidebar, toggled with `<leader>e`. |
 | [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) | `editor/treesitter.lua` | Syntax highlighting, indentation, and incremental selection for the languages listed in `ensure_installed`. |
 | [which-key.nvim](https://github.com/folke/which-key.nvim) | `editor/whichkey.lua` | Popup that shows available keybindings as you type a prefix. |
